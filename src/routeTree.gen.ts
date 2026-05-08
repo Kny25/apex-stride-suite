@@ -13,13 +13,20 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as AppRouteImport } from './routes/_app'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppUsuariosRouteImport } from './routes/_app/usuarios'
+import { Route as AppSenhasLinksRouteImport } from './routes/_app/senhas-links'
+import { Route as AppRhRouteImport } from './routes/_app/rh'
 import { Route as AppRelatoriosRouteImport } from './routes/_app/relatorios'
 import { Route as AppPerfilRouteImport } from './routes/_app/perfil'
+import { Route as AppPedagogicoRouteImport } from './routes/_app/pedagogico'
+import { Route as AppMarketingRouteImport } from './routes/_app/marketing'
+import { Route as AppIaRouteImport } from './routes/_app/ia'
 import { Route as AppFinanceiroRouteImport } from './routes/_app/financeiro'
 import { Route as AppEmpresarioRouteImport } from './routes/_app/empresario'
 import { Route as AppDashboardRouteImport } from './routes/_app/dashboard'
 import { Route as AppContratosRouteImport } from './routes/_app/contratos'
 import { Route as AppConfiguracoesRouteImport } from './routes/_app/configuracoes'
+import { Route as AppComercialRouteImport } from './routes/_app/comercial'
+import { Route as AppCalendarioRouteImport } from './routes/_app/calendario'
 import { Route as AppAlunosRouteImport } from './routes/_app/alunos'
 
 const LoginRoute = LoginRouteImport.update({
@@ -41,6 +48,16 @@ const AppUsuariosRoute = AppUsuariosRouteImport.update({
   path: '/usuarios',
   getParentRoute: () => AppRoute,
 } as any)
+const AppSenhasLinksRoute = AppSenhasLinksRouteImport.update({
+  id: '/senhas-links',
+  path: '/senhas-links',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppRhRoute = AppRhRouteImport.update({
+  id: '/rh',
+  path: '/rh',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppRelatoriosRoute = AppRelatoriosRouteImport.update({
   id: '/relatorios',
   path: '/relatorios',
@@ -49,6 +66,21 @@ const AppRelatoriosRoute = AppRelatoriosRouteImport.update({
 const AppPerfilRoute = AppPerfilRouteImport.update({
   id: '/perfil',
   path: '/perfil',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppPedagogicoRoute = AppPedagogicoRouteImport.update({
+  id: '/pedagogico',
+  path: '/pedagogico',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppMarketingRoute = AppMarketingRouteImport.update({
+  id: '/marketing',
+  path: '/marketing',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppIaRoute = AppIaRouteImport.update({
+  id: '/ia',
+  path: '/ia',
   getParentRoute: () => AppRoute,
 } as any)
 const AppFinanceiroRoute = AppFinanceiroRouteImport.update({
@@ -76,6 +108,16 @@ const AppConfiguracoesRoute = AppConfiguracoesRouteImport.update({
   path: '/configuracoes',
   getParentRoute: () => AppRoute,
 } as any)
+const AppComercialRoute = AppComercialRouteImport.update({
+  id: '/comercial',
+  path: '/comercial',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppCalendarioRoute = AppCalendarioRouteImport.update({
+  id: '/calendario',
+  path: '/calendario',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppAlunosRoute = AppAlunosRouteImport.update({
   id: '/alunos',
   path: '/alunos',
@@ -86,26 +128,40 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/alunos': typeof AppAlunosRoute
+  '/calendario': typeof AppCalendarioRoute
+  '/comercial': typeof AppComercialRoute
   '/configuracoes': typeof AppConfiguracoesRoute
   '/contratos': typeof AppContratosRoute
   '/dashboard': typeof AppDashboardRoute
   '/empresario': typeof AppEmpresarioRoute
   '/financeiro': typeof AppFinanceiroRoute
+  '/ia': typeof AppIaRoute
+  '/marketing': typeof AppMarketingRoute
+  '/pedagogico': typeof AppPedagogicoRoute
   '/perfil': typeof AppPerfilRoute
   '/relatorios': typeof AppRelatoriosRoute
+  '/rh': typeof AppRhRoute
+  '/senhas-links': typeof AppSenhasLinksRoute
   '/usuarios': typeof AppUsuariosRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/alunos': typeof AppAlunosRoute
+  '/calendario': typeof AppCalendarioRoute
+  '/comercial': typeof AppComercialRoute
   '/configuracoes': typeof AppConfiguracoesRoute
   '/contratos': typeof AppContratosRoute
   '/dashboard': typeof AppDashboardRoute
   '/empresario': typeof AppEmpresarioRoute
   '/financeiro': typeof AppFinanceiroRoute
+  '/ia': typeof AppIaRoute
+  '/marketing': typeof AppMarketingRoute
+  '/pedagogico': typeof AppPedagogicoRoute
   '/perfil': typeof AppPerfilRoute
   '/relatorios': typeof AppRelatoriosRoute
+  '/rh': typeof AppRhRoute
+  '/senhas-links': typeof AppSenhasLinksRoute
   '/usuarios': typeof AppUsuariosRoute
 }
 export interface FileRoutesById {
@@ -114,13 +170,20 @@ export interface FileRoutesById {
   '/_app': typeof AppRouteWithChildren
   '/login': typeof LoginRoute
   '/_app/alunos': typeof AppAlunosRoute
+  '/_app/calendario': typeof AppCalendarioRoute
+  '/_app/comercial': typeof AppComercialRoute
   '/_app/configuracoes': typeof AppConfiguracoesRoute
   '/_app/contratos': typeof AppContratosRoute
   '/_app/dashboard': typeof AppDashboardRoute
   '/_app/empresario': typeof AppEmpresarioRoute
   '/_app/financeiro': typeof AppFinanceiroRoute
+  '/_app/ia': typeof AppIaRoute
+  '/_app/marketing': typeof AppMarketingRoute
+  '/_app/pedagogico': typeof AppPedagogicoRoute
   '/_app/perfil': typeof AppPerfilRoute
   '/_app/relatorios': typeof AppRelatoriosRoute
+  '/_app/rh': typeof AppRhRoute
+  '/_app/senhas-links': typeof AppSenhasLinksRoute
   '/_app/usuarios': typeof AppUsuariosRoute
 }
 export interface FileRouteTypes {
@@ -129,26 +192,40 @@ export interface FileRouteTypes {
     | '/'
     | '/login'
     | '/alunos'
+    | '/calendario'
+    | '/comercial'
     | '/configuracoes'
     | '/contratos'
     | '/dashboard'
     | '/empresario'
     | '/financeiro'
+    | '/ia'
+    | '/marketing'
+    | '/pedagogico'
     | '/perfil'
     | '/relatorios'
+    | '/rh'
+    | '/senhas-links'
     | '/usuarios'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/login'
     | '/alunos'
+    | '/calendario'
+    | '/comercial'
     | '/configuracoes'
     | '/contratos'
     | '/dashboard'
     | '/empresario'
     | '/financeiro'
+    | '/ia'
+    | '/marketing'
+    | '/pedagogico'
     | '/perfil'
     | '/relatorios'
+    | '/rh'
+    | '/senhas-links'
     | '/usuarios'
   id:
     | '__root__'
@@ -156,13 +233,20 @@ export interface FileRouteTypes {
     | '/_app'
     | '/login'
     | '/_app/alunos'
+    | '/_app/calendario'
+    | '/_app/comercial'
     | '/_app/configuracoes'
     | '/_app/contratos'
     | '/_app/dashboard'
     | '/_app/empresario'
     | '/_app/financeiro'
+    | '/_app/ia'
+    | '/_app/marketing'
+    | '/_app/pedagogico'
     | '/_app/perfil'
     | '/_app/relatorios'
+    | '/_app/rh'
+    | '/_app/senhas-links'
     | '/_app/usuarios'
   fileRoutesById: FileRoutesById
 }
@@ -202,6 +286,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppUsuariosRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/senhas-links': {
+      id: '/_app/senhas-links'
+      path: '/senhas-links'
+      fullPath: '/senhas-links'
+      preLoaderRoute: typeof AppSenhasLinksRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/rh': {
+      id: '/_app/rh'
+      path: '/rh'
+      fullPath: '/rh'
+      preLoaderRoute: typeof AppRhRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/relatorios': {
       id: '/_app/relatorios'
       path: '/relatorios'
@@ -214,6 +312,27 @@ declare module '@tanstack/react-router' {
       path: '/perfil'
       fullPath: '/perfil'
       preLoaderRoute: typeof AppPerfilRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/pedagogico': {
+      id: '/_app/pedagogico'
+      path: '/pedagogico'
+      fullPath: '/pedagogico'
+      preLoaderRoute: typeof AppPedagogicoRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/marketing': {
+      id: '/_app/marketing'
+      path: '/marketing'
+      fullPath: '/marketing'
+      preLoaderRoute: typeof AppMarketingRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/ia': {
+      id: '/_app/ia'
+      path: '/ia'
+      fullPath: '/ia'
+      preLoaderRoute: typeof AppIaRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/financeiro': {
@@ -251,6 +370,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppConfiguracoesRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/comercial': {
+      id: '/_app/comercial'
+      path: '/comercial'
+      fullPath: '/comercial'
+      preLoaderRoute: typeof AppComercialRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/calendario': {
+      id: '/_app/calendario'
+      path: '/calendario'
+      fullPath: '/calendario'
+      preLoaderRoute: typeof AppCalendarioRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/alunos': {
       id: '/_app/alunos'
       path: '/alunos'
@@ -263,25 +396,39 @@ declare module '@tanstack/react-router' {
 
 interface AppRouteChildren {
   AppAlunosRoute: typeof AppAlunosRoute
+  AppCalendarioRoute: typeof AppCalendarioRoute
+  AppComercialRoute: typeof AppComercialRoute
   AppConfiguracoesRoute: typeof AppConfiguracoesRoute
   AppContratosRoute: typeof AppContratosRoute
   AppDashboardRoute: typeof AppDashboardRoute
   AppEmpresarioRoute: typeof AppEmpresarioRoute
   AppFinanceiroRoute: typeof AppFinanceiroRoute
+  AppIaRoute: typeof AppIaRoute
+  AppMarketingRoute: typeof AppMarketingRoute
+  AppPedagogicoRoute: typeof AppPedagogicoRoute
   AppPerfilRoute: typeof AppPerfilRoute
   AppRelatoriosRoute: typeof AppRelatoriosRoute
+  AppRhRoute: typeof AppRhRoute
+  AppSenhasLinksRoute: typeof AppSenhasLinksRoute
   AppUsuariosRoute: typeof AppUsuariosRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
   AppAlunosRoute: AppAlunosRoute,
+  AppCalendarioRoute: AppCalendarioRoute,
+  AppComercialRoute: AppComercialRoute,
   AppConfiguracoesRoute: AppConfiguracoesRoute,
   AppContratosRoute: AppContratosRoute,
   AppDashboardRoute: AppDashboardRoute,
   AppEmpresarioRoute: AppEmpresarioRoute,
   AppFinanceiroRoute: AppFinanceiroRoute,
+  AppIaRoute: AppIaRoute,
+  AppMarketingRoute: AppMarketingRoute,
+  AppPedagogicoRoute: AppPedagogicoRoute,
   AppPerfilRoute: AppPerfilRoute,
   AppRelatoriosRoute: AppRelatoriosRoute,
+  AppRhRoute: AppRhRoute,
+  AppSenhasLinksRoute: AppSenhasLinksRoute,
   AppUsuariosRoute: AppUsuariosRoute,
 }
 
@@ -295,3 +442,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
