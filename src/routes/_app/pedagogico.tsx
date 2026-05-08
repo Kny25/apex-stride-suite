@@ -42,14 +42,12 @@ function PedagogicoPage() {
     <>
       <PageHeader
         title={
-          (
-            <span className="inline-flex items-center gap-3">
-              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 text-white shadow-glow">
-                <GraduationCap className="h-5 w-5" />
-              </span>
-              Pedagógico
+          <span className="inline-flex items-center gap-3">
+            <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 text-white shadow-glow">
+              <GraduationCap className="h-5 w-5" />
             </span>
-          ) as unknown as string
+            Pedagógico
+          </span>
         }
         subtitle="Gestão pedagógica e acadêmica"
       />
