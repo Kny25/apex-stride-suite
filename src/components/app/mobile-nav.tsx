@@ -1,19 +1,22 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import {
-  LayoutDashboard, Users, Wallet, FileText, GraduationCap,
-  BarChart3, Settings, LogOut, Sparkles,
+  LayoutDashboard, Calendar, Users, BookOpen, Briefcase,
+  Megaphone, Wallet, Sparkles, KeyRound, HelpCircle, Crown,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const items = [
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { to: "/usuarios", label: "Usuários", icon: Users },
+  { to: "/calendario", label: "Calendário", icon: Calendar },
+  { to: "/rh", label: "RH", icon: Users },
+  { to: "/pedagogico", label: "Pedagógico", icon: BookOpen },
+  { to: "/comercial", label: "Comercial", icon: Briefcase },
+  { to: "/marketing", label: "Marketing", icon: Megaphone },
   { to: "/financeiro", label: "Financeiro", icon: Wallet },
-  { to: "/contratos", label: "Contratos", icon: FileText },
-  { to: "/alunos", label: "Alunos", icon: GraduationCap },
-  { to: "/relatorios", label: "Relatórios", icon: BarChart3 },
-  { to: "/configuracoes", label: "Configurações", icon: Settings },
+  { to: "/ia", label: "IA", icon: Sparkles },
+  { to: "/senhas-links", label: "Senhas e Links", icon: KeyRound },
+  { to: "/empresario", label: "Empresário", icon: Crown },
 ] as const;
 
 export function MobileNav({ open, onOpenChange }: { open: boolean; onOpenChange: (v: boolean) => void }) {
@@ -27,30 +30,27 @@ export function MobileNav({ open, onOpenChange }: { open: boolean; onOpenChange:
           </div>
           <div>
             <div className="text-sm font-bold">SGE</div>
-            <div className="text-[11px] text-muted-foreground">Gestão Empresarial</div>
+            <div className="text-[11px] text-muted-foreground">Plataforma Educacional</div>
           </div>
         </div>
         <nav className="p-3 space-y-1">
           {items.map(({ to, label, icon: Icon }) => {
-            const active = path === to || (to !== "/dashboard" && path.startsWith(to));
+            const active = path === to;
             return (
               <Link
                 key={to} to={to} onClick={() => onOpenChange(false)}
                 className={cn(
-                  "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition",
-                  active ? "bg-sidebar-accent text-sidebar-accent-foreground" : "text-sidebar-foreground/70 hover:bg-sidebar-accent/60"
+                  "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition",
+                  active ? "bg-primary-soft text-primary" : "text-sidebar-foreground/80 hover:bg-muted"
                 )}
               >
                 <Icon className="h-[18px] w-[18px]" />{label}
               </Link>
             );
           })}
-          <Link
-            to="/login" onClick={() => onOpenChange(false)}
-            className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-sidebar-foreground/70 hover:text-destructive hover:bg-sidebar-accent/60 transition mt-4"
-          >
-            <LogOut className="h-[18px] w-[18px]" />Sair
-          </Link>
+          <button className="w-full mt-4 flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-sidebar-foreground/80 hover:text-primary hover:bg-primary-soft transition">
+            <HelpCircle className="h-[18px] w-[18px]" />Central de Ajuda
+          </button>
         </nav>
       </SheetContent>
     </Sheet>
