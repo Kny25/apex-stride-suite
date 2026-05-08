@@ -12,7 +12,7 @@ function AppLayout() {
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   return (
-    <div className="flex min-h-screen w-full">
+    <div className="flex min-h-screen w-full bg-background">
       <AppSidebar collapsed={collapsed} onToggle={() => setCollapsed((v) => !v)} />
       <MobileNav open={mobileOpen} onOpenChange={setMobileOpen} />
       <div className="flex-1 flex flex-col min-w-0">
