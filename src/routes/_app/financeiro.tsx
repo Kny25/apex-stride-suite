@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { AlertTriangle, CreditCard, Banknote, HelpCircle, type LucideIcon } from "lucide-react";
 
@@ -49,16 +49,17 @@ function FinanceiroPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.35, delay: i * 0.05 }}
           >
-            <Link
-              to={c.to as never}
-              className="group block bg-card rounded-2xl border border-border shadow-card hover:shadow-soft transition-all p-6 h-full"
+            <button
+              type="button"
+              data-to={c.to}
+              className="group w-full text-left bg-card rounded-2xl border border-border shadow-card hover:shadow-soft transition-all p-6 h-full"
             >
               <div className={`h-12 w-12 rounded-full ${c.iconBg} grid place-items-center mb-5 group-hover:scale-105 transition-transform`}>
                 <c.icon className={`h-6 w-6 ${c.iconColor}`} />
               </div>
               <h3 className="font-semibold text-lg mb-1.5">{c.title}</h3>
               <p className="text-sm text-muted-foreground">{c.description}</p>
-            </Link>
+            </button>
           </motion.div>
         ))}
       </div>
