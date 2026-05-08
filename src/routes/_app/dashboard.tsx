@@ -17,6 +17,7 @@ import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { agendaStore, useAgenda, categoryMeta } from "@/lib/agenda-store";
 
 export const Route = createFileRoute("/_app/dashboard")({
   component: DashboardPage,
@@ -59,36 +60,23 @@ const quickCards: QuickCard[] = [
   },
 ];
 
-type Reminder = { id: string; text: string; done: boolean };
-
-const initialReminders: Reminder[] = [
-  { id: "1", text: "Confirmar pagamento da Globex S/A", done: false },
-  { id: "2", text: "Reunião com equipe pedagógica às 15h", done: false },
-  { id: "3", text: "Enviar relatório financeiro mensal", done: true },
-  { id: "4", text: "Revisar contratos a vencer esta semana", done: false },
-];
-
 function DashboardPage() {
-  const [reminders, setReminders] = useState<Reminder[]>(initialReminders);
+  const items = useAgenda();
+  const reminders = items.filter((i) => i.source === "dashboard");
   const [draft, setDraft] = useState("");
 
   const addReminder = () => {
     const text = draft.trim();
     if (!text) return;
-    setReminders((prev) => [
-      { id: crypto.randomUUID(), text, done: false },
-      ...prev,
-    ]);
+    agendaStore.add({
+      title: text,
+      date: new Date().toISOString().slice(0, 10),
+      category: "lembrete",
+      done: false,
+      source: "dashboard",
+    });
     setDraft("");
   };
-
-  const toggle = (id: string) =>
-    setReminders((prev) =>
-      prev.map((r) => (r.id === id ? { ...r, done: !r.done } : r)),
-    );
-
-  const remove = (id: string) =>
-    setReminders((prev) => prev.filter((r) => r.id !== id));
 
   const onKey = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
@@ -104,7 +92,6 @@ function DashboardPage() {
         subtitle="Acesso rápido aos módulos essenciais e visão executiva do seu dia."
       />
 
-      {/* Quick access cards */}
       <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {quickCards.map((c, i) => (
           <motion.div
@@ -125,18 +112,13 @@ function DashboardPage() {
               <div className="absolute right-4 top-4 rounded-full bg-white/15 p-2 backdrop-blur-sm transition-transform group-hover:translate-x-1 group-hover:-translate-y-1">
                 <ArrowUpRight className="h-4 w-4" />
               </div>
-
               <div className="relative flex h-12 w-12 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm">
                 <c.icon className="h-6 w-6" />
               </div>
-
               <div className="relative mt-6">
                 <h3 className="text-xl font-semibold tracking-tight">{c.title}</h3>
-                <p className="mt-1.5 text-sm text-white/85 leading-relaxed">
-                  {c.description}
-                </p>
+                <p className="mt-1.5 text-sm text-white/85 leading-relaxed">{c.description}</p>
               </div>
-
               <div className="relative mt-6 inline-flex items-center gap-1.5 text-xs font-medium text-white/90">
                 Acessar módulo
                 <ArrowUpRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
@@ -146,9 +128,7 @@ function DashboardPage() {
         ))}
       </div>
 
-      {/* Financial summary + reminders */}
       <div className="mt-6 grid gap-5 lg:grid-cols-3">
-        {/* Total pago no mês */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
@@ -178,7 +158,6 @@ function DashboardPage() {
           </div>
         </motion.div>
 
-        {/* Anotações e Lembretes */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
@@ -193,7 +172,7 @@ function DashboardPage() {
               <div>
                 <h3 className="font-semibold">Anotações e Lembretes</h3>
                 <p className="text-xs text-muted-foreground">
-                  Organize suas tarefas do dia
+                  Sincronizado com o calendário automaticamente
                 </p>
               </div>
             </div>
@@ -210,11 +189,7 @@ function DashboardPage() {
               placeholder="Adicionar nova anotação..."
               className="h-11 rounded-xl"
             />
-            <Button
-              type="button"
-              onClick={addReminder}
-              className="h-11 rounded-xl px-4"
-            >
+            <Button type="button" onClick={addReminder} className="h-11 rounded-xl px-4">
               <Plus className="h-4 w-4" />
               Adicionar
             </Button>
@@ -226,40 +201,44 @@ function DashboardPage() {
                 Nenhuma anotação ainda. Comece adicionando uma acima.
               </li>
             )}
-            {reminders.map((r) => (
-              <motion.li
-                key={r.id}
-                layout
-                initial={{ opacity: 0, x: -8 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: 8 }}
-                className={cn(
-                  "group flex items-center gap-3 rounded-xl border border-border bg-background/60 px-4 py-3 transition-colors hover:border-primary/30 hover:bg-primary-soft/40",
-                )}
-              >
-                <Checkbox
-                  checked={r.done}
-                  onCheckedChange={() => toggle(r.id)}
-                  className="h-5 w-5 rounded-md"
-                />
-                <span
-                  className={cn(
-                    "flex-1 text-sm transition-all",
-                    r.done && "text-muted-foreground line-through opacity-60",
+            {reminders.map((r) => {
+              const meta = categoryMeta[r.category];
+              return (
+                <motion.li
+                  key={r.id}
+                  layout
+                  initial={{ opacity: 0, x: -8 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  className="group flex items-center gap-3 rounded-xl border border-border bg-background/60 px-4 py-3 transition-colors hover:border-primary/30 hover:bg-primary-soft/40"
+                >
+                  <Checkbox
+                    checked={r.done}
+                    onCheckedChange={() => agendaStore.toggle(r.id)}
+                    className="h-5 w-5 rounded-md"
+                  />
+                  <span className={cn("h-2 w-2 rounded-full", meta.dot)} />
+                  <span
+                    className={cn(
+                      "flex-1 text-sm transition-all",
+                      r.done && "text-muted-foreground line-through opacity-60",
+                    )}
+                  >
+                    {r.title}
+                  </span>
+                  {r.time && (
+                    <span className="text-xs text-muted-foreground tabular-nums">{r.time}</span>
                   )}
-                >
-                  {r.text}
-                </span>
-                <button
-                  type="button"
-                  onClick={() => remove(r.id)}
-                  aria-label="Remover anotação"
-                  className="rounded-md p-1.5 text-muted-foreground opacity-0 transition-all hover:bg-destructive/10 hover:text-destructive group-hover:opacity-100"
-                >
-                  <Trash2 className="h-4 w-4" />
-                </button>
-              </motion.li>
-            ))}
+                  <button
+                    type="button"
+                    onClick={() => agendaStore.remove(r.id)}
+                    aria-label="Remover anotação"
+                    className="rounded-md p-1.5 text-muted-foreground opacity-0 transition-all hover:bg-destructive/10 hover:text-destructive group-hover:opacity-100"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </button>
+                </motion.li>
+              );
+            })}
           </ul>
         </motion.div>
       </div>
