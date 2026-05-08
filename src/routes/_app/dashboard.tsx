@@ -1,142 +1,267 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { DollarSign, Users, FileText, TrendingUp, Plus, Calendar as CalIcon } from "lucide-react";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { useState, type KeyboardEvent } from "react";
+import { motion } from "framer-motion";
 import {
-  ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip,
-  BarChart, Bar,
-} from "recharts";
-import { StatCard } from "@/components/app/stat-card";
+  ArrowUpRight,
+  Wallet,
+  Users,
+  Banknote,
+  TrendingUp,
+  Trash2,
+  Plus,
+  StickyNote,
+  type LucideIcon,
+} from "lucide-react";
 import { PageHeader } from "@/components/app/page-header";
+import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
-import { stats, revenueData, channelData, recentActivity } from "@/lib/mock-data";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_app/dashboard")({
   component: DashboardPage,
   head: () => ({ meta: [{ title: "Dashboard — SGE" }] }),
 });
 
-const icons = [DollarSign, Users, FileText, TrendingUp];
+type QuickCard = {
+  title: string;
+  description: string;
+  icon: LucideIcon;
+  to: string;
+  gradient: string;
+  glow: string;
+};
+
+const quickCards: QuickCard[] = [
+  {
+    title: "Contas a Pagar",
+    description: "Gerencie despesas, vencimentos e fornecedores.",
+    icon: Wallet,
+    to: "/financeiro",
+    gradient: "from-rose-500 via-red-500 to-orange-500",
+    glow: "shadow-[0_18px_40px_-18px_rgba(244,63,94,0.55)]",
+  },
+  {
+    title: "Recursos Humanos",
+    description: "Colaboradores, folha de pagamento e benefícios.",
+    icon: Users,
+    to: "/rh",
+    gradient: "from-sky-500 via-blue-500 to-indigo-500",
+    glow: "shadow-[0_18px_40px_-18px_rgba(59,130,246,0.55)]",
+  },
+  {
+    title: "Caixa",
+    description: "Entradas, saídas e fluxo de caixa diário.",
+    icon: Banknote,
+    to: "/financeiro",
+    gradient: "from-emerald-500 via-green-500 to-teal-500",
+    glow: "shadow-[0_18px_40px_-18px_rgba(16,185,129,0.55)]",
+  },
+];
+
+type Reminder = { id: string; text: string; done: boolean };
+
+const initialReminders: Reminder[] = [
+  { id: "1", text: "Confirmar pagamento da Globex S/A", done: false },
+  { id: "2", text: "Reunião com equipe pedagógica às 15h", done: false },
+  { id: "3", text: "Enviar relatório financeiro mensal", done: true },
+  { id: "4", text: "Revisar contratos a vencer esta semana", done: false },
+];
 
 function DashboardPage() {
+  const [reminders, setReminders] = useState<Reminder[]>(initialReminders);
+  const [draft, setDraft] = useState("");
+
+  const addReminder = () => {
+    const text = draft.trim();
+    if (!text) return;
+    setReminders((prev) => [
+      { id: crypto.randomUUID(), text, done: false },
+      ...prev,
+    ]);
+    setDraft("");
+  };
+
+  const toggle = (id: string) =>
+    setReminders((prev) =>
+      prev.map((r) => (r.id === id ? { ...r, done: !r.done } : r)),
+    );
+
+  const remove = (id: string) =>
+    setReminders((prev) => prev.filter((r) => r.id !== id));
+
+  const onKey = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      addReminder();
+    }
+  };
+
   return (
     <>
       <PageHeader
-        title="Visão Geral"
-        subtitle="Acompanhe os principais indicadores do seu negócio em tempo real."
-        actions={
-          <>
-            <Button variant="outline"><CalIcon className="h-4 w-4" />Últimos 30 dias</Button>
-            <Button variant="premium"><Plus className="h-4 w-4" />Novo Contrato</Button>
-          </>
-        }
+        title="Olá, bem-vindo de volta 👋"
+        subtitle="Acesso rápido aos módulos essenciais e visão executiva do seu dia."
       />
 
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        {stats.map((s, i) => (
-          <StatCard key={s.label} {...s} icon={icons[i]} />
+      {/* Quick access cards */}
+      <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        {quickCards.map((c, i) => (
+          <motion.div
+            key={c.title}
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: i * 0.08, duration: 0.4, ease: "easeOut" }}
+          >
+            <Link
+              to={c.to}
+              className={cn(
+                "group relative block overflow-hidden rounded-2xl bg-gradient-to-br p-6 text-white transition-all duration-300 hover:-translate-y-1",
+                c.gradient,
+                c.glow,
+              )}
+            >
+              <div className="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-white/15 blur-2xl transition-all duration-500 group-hover:scale-125" />
+              <div className="absolute right-4 top-4 rounded-full bg-white/15 p-2 backdrop-blur-sm transition-transform group-hover:translate-x-1 group-hover:-translate-y-1">
+                <ArrowUpRight className="h-4 w-4" />
+              </div>
+
+              <div className="relative flex h-12 w-12 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm">
+                <c.icon className="h-6 w-6" />
+              </div>
+
+              <div className="relative mt-6">
+                <h3 className="text-xl font-semibold tracking-tight">{c.title}</h3>
+                <p className="mt-1.5 text-sm text-white/85 leading-relaxed">
+                  {c.description}
+                </p>
+              </div>
+
+              <div className="relative mt-6 inline-flex items-center gap-1.5 text-xs font-medium text-white/90">
+                Acessar módulo
+                <ArrowUpRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
+              </div>
+            </Link>
+          </motion.div>
         ))}
       </div>
 
-      <div className="mt-6 grid gap-4 lg:grid-cols-3">
-        <div className="lg:col-span-2 rounded-2xl border border-border bg-card-premium shadow-card p-6">
-          <div className="flex items-center justify-between mb-4">
+      {/* Financial summary + reminders */}
+      <div className="mt-6 grid gap-5 lg:grid-cols-3">
+        {/* Total pago no mês */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.25, duration: 0.4 }}
+          className="relative overflow-hidden rounded-2xl border border-border bg-card p-6 shadow-card lg:col-span-1"
+        >
+          <span className="absolute inset-y-0 left-0 w-1.5 bg-gradient-to-b from-emerald-400 to-emerald-600" />
+          <div className="flex items-start justify-between">
             <div>
-              <h3 className="font-semibold">Receita vs Despesa</h3>
-              <p className="text-xs text-muted-foreground">Performance financeira nos últimos 12 meses</p>
+              <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                Total Pago no Mês
+              </p>
+              <p className="mt-3 text-3xl font-bold tracking-tight text-emerald-600">
+                R$ 184.520,75
+              </p>
+            </div>
+            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-50">
+              <TrendingUp className="h-5 w-5 text-emerald-600" />
             </div>
           </div>
-          <div className="h-72">
-            <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={revenueData} margin={{ left: -20, right: 8, top: 8, bottom: 0 }}>
-                <defs>
-                  <linearGradient id="gRev" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="oklch(0.66 0.20 274)" stopOpacity={0.5} />
-                    <stop offset="100%" stopColor="oklch(0.66 0.20 274)" stopOpacity={0} />
-                  </linearGradient>
-                  <linearGradient id="gDesp" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="oklch(0.74 0.18 295)" stopOpacity={0.4} />
-                    <stop offset="100%" stopColor="oklch(0.74 0.18 295)" stopOpacity={0} />
-                  </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="oklch(1 0 0 / 0.06)" vertical={false} />
-                <XAxis dataKey="month" stroke="oklch(0.70 0.02 264)" fontSize={11} tickLine={false} axisLine={false} />
-                <YAxis stroke="oklch(0.70 0.02 264)" fontSize={11} tickLine={false} axisLine={false} />
-                <Tooltip
-                  contentStyle={{
-                    background: "oklch(0.20 0.02 264)",
-                    border: "1px solid oklch(1 0 0 / 0.08)",
-                    borderRadius: 12,
-                    fontSize: 12,
-                  }}
+          <p className="mt-4 text-xs text-muted-foreground">
+            Atualizado há 2 minutos · 47 pagamentos processados
+          </p>
+          <div className="mt-5 flex items-center gap-2 rounded-lg bg-emerald-50 px-3 py-2 text-xs font-medium text-emerald-700">
+            <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+            +12,4% em relação ao mês anterior
+          </div>
+        </motion.div>
+
+        {/* Anotações e Lembretes */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3, duration: 0.4 }}
+          className="rounded-2xl border border-border bg-card p-6 shadow-card lg:col-span-2"
+        >
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary-soft">
+                <StickyNote className="h-5 w-5 text-primary" />
+              </div>
+              <div>
+                <h3 className="font-semibold">Anotações e Lembretes</h3>
+                <p className="text-xs text-muted-foreground">
+                  Organize suas tarefas do dia
+                </p>
+              </div>
+            </div>
+            <span className="text-xs font-medium text-muted-foreground">
+              {reminders.filter((r) => !r.done).length} pendentes
+            </span>
+          </div>
+
+          <div className="mt-5 flex gap-2">
+            <Input
+              value={draft}
+              onChange={(e) => setDraft(e.target.value)}
+              onKeyDown={onKey}
+              placeholder="Adicionar nova anotação..."
+              className="h-11 rounded-xl"
+            />
+            <Button
+              type="button"
+              onClick={addReminder}
+              className="h-11 rounded-xl px-4"
+            >
+              <Plus className="h-4 w-4" />
+              Adicionar
+            </Button>
+          </div>
+
+          <ul className="mt-5 space-y-2">
+            {reminders.length === 0 && (
+              <li className="rounded-xl border border-dashed border-border p-6 text-center text-sm text-muted-foreground">
+                Nenhuma anotação ainda. Comece adicionando uma acima.
+              </li>
+            )}
+            {reminders.map((r) => (
+              <motion.li
+                key={r.id}
+                layout
+                initial={{ opacity: 0, x: -8 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 8 }}
+                className={cn(
+                  "group flex items-center gap-3 rounded-xl border border-border bg-background/60 px-4 py-3 transition-colors hover:border-primary/30 hover:bg-primary-soft/40",
+                )}
+              >
+                <Checkbox
+                  checked={r.done}
+                  onCheckedChange={() => toggle(r.id)}
+                  className="h-5 w-5 rounded-md"
                 />
-                <Area type="monotone" dataKey="receita" stroke="oklch(0.66 0.20 274)" strokeWidth={2.5} fill="url(#gRev)" />
-                <Area type="monotone" dataKey="despesa" stroke="oklch(0.74 0.18 295)" strokeWidth={2} fill="url(#gDesp)" />
-              </AreaChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-
-        <div className="rounded-2xl border border-border bg-card-premium shadow-card p-6">
-          <h3 className="font-semibold">Canais de Aquisição</h3>
-          <p className="text-xs text-muted-foreground mb-4">Distribuição por origem</p>
-          <div className="h-72">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={channelData} margin={{ left: -20, right: 8, top: 8 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="oklch(1 0 0 / 0.06)" vertical={false} />
-                <XAxis dataKey="name" stroke="oklch(0.70 0.02 264)" fontSize={11} tickLine={false} axisLine={false} />
-                <YAxis stroke="oklch(0.70 0.02 264)" fontSize={11} tickLine={false} axisLine={false} />
-                <Tooltip contentStyle={{ background: "oklch(0.20 0.02 264)", border: "1px solid oklch(1 0 0 / 0.08)", borderRadius: 12, fontSize: 12 }} />
-                <Bar dataKey="value" fill="oklch(0.66 0.20 274)" radius={[8, 8, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-      </div>
-
-      <div className="mt-6 grid gap-4 lg:grid-cols-3">
-        <div className="lg:col-span-2 rounded-2xl border border-border bg-card-premium shadow-card p-6">
-          <h3 className="font-semibold mb-4">Atividades Recentes</h3>
-          <div className="space-y-1">
-            {recentActivity.map((a, i) => (
-              <div key={i} className="flex items-center gap-4 p-3 rounded-lg hover:bg-muted/30 transition">
-                <Avatar className="h-9 w-9">
-                  <AvatarFallback className="bg-gradient-primary text-primary-foreground text-xs font-semibold">
-                    {a.user.split(" ").map((n) => n[0]).join("")}
-                  </AvatarFallback>
-                </Avatar>
-                <div className="flex-1 min-w-0">
-                  <div className="text-sm">
-                    <span className="font-medium">{a.user}</span>{" "}
-                    <span className="text-muted-foreground">{a.action}</span>{" "}
-                    <span className="font-medium text-primary">{a.target}</span>
-                  </div>
-                  <div className="text-xs text-muted-foreground">{a.time}</div>
-                </div>
-              </div>
+                <span
+                  className={cn(
+                    "flex-1 text-sm transition-all",
+                    r.done && "text-muted-foreground line-through opacity-60",
+                  )}
+                >
+                  {r.text}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => remove(r.id)}
+                  aria-label="Remover anotação"
+                  className="rounded-md p-1.5 text-muted-foreground opacity-0 transition-all hover:bg-destructive/10 hover:text-destructive group-hover:opacity-100"
+                >
+                  <Trash2 className="h-4 w-4" />
+                </button>
+              </motion.li>
             ))}
-          </div>
-        </div>
-
-        <div className="rounded-2xl border border-border bg-card-premium shadow-card p-6">
-          <h3 className="font-semibold">Próximos Vencimentos</h3>
-          <p className="text-xs text-muted-foreground mb-4">Contratos a renovar</p>
-          <div className="space-y-3">
-            {[
-              { c: "Globex S/A", d: "em 5 dias", v: "R$ 38.900" },
-              { c: "Initech", d: "em 12 dias", v: "R$ 12.300" },
-              { c: "Acme Ltda", d: "em 18 dias", v: "R$ 24.500" },
-              { c: "Wayne Ent.", d: "em 27 dias", v: "R$ 89.000" },
-            ].map((x) => (
-              <div key={x.c} className="flex items-center justify-between p-3 rounded-lg border border-border bg-muted/20">
-                <div>
-                  <div className="text-sm font-medium">{x.c}</div>
-                  <div className="text-xs text-muted-foreground">{x.d}</div>
-                </div>
-                <div className="text-sm font-semibold text-primary">{x.v}</div>
-              </div>
-            ))}
-          </div>
-        </div>
+          </ul>
+        </motion.div>
       </div>
     </>
   );
