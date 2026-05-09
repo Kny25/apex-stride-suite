@@ -30,6 +30,7 @@ import { Route as AppCalendarioRouteImport } from './routes/_app/calendario'
 import { Route as AppAlunosRouteImport } from './routes/_app/alunos'
 import { Route as AppRhSetorRouteImport } from './routes/_app/rh.$setor'
 import { Route as AppRhSetorColaboradorIdRouteImport } from './routes/_app/rh.$setor.$colaboradorId'
+import { Route as AppRhSetorColaboradorIdDocumentoTipoRouteImport } from './routes/_app/rh.$setor.$colaboradorId.documento.$tipo'
 
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
@@ -135,6 +136,12 @@ const AppRhSetorColaboradorIdRoute = AppRhSetorColaboradorIdRouteImport.update({
   path: '/$colaboradorId',
   getParentRoute: () => AppRhSetorRoute,
 } as any)
+const AppRhSetorColaboradorIdDocumentoTipoRoute =
+  AppRhSetorColaboradorIdDocumentoTipoRouteImport.update({
+    id: '/documento/$tipo',
+    path: '/documento/$tipo',
+    getParentRoute: () => AppRhSetorColaboradorIdRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -156,7 +163,8 @@ export interface FileRoutesByFullPath {
   '/senhas-links': typeof AppSenhasLinksRoute
   '/usuarios': typeof AppUsuariosRoute
   '/rh/$setor': typeof AppRhSetorRouteWithChildren
-  '/rh/$setor/$colaboradorId': typeof AppRhSetorColaboradorIdRoute
+  '/rh/$setor/$colaboradorId': typeof AppRhSetorColaboradorIdRouteWithChildren
+  '/rh/$setor/$colaboradorId/documento/$tipo': typeof AppRhSetorColaboradorIdDocumentoTipoRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -178,7 +186,8 @@ export interface FileRoutesByTo {
   '/senhas-links': typeof AppSenhasLinksRoute
   '/usuarios': typeof AppUsuariosRoute
   '/rh/$setor': typeof AppRhSetorRouteWithChildren
-  '/rh/$setor/$colaboradorId': typeof AppRhSetorColaboradorIdRoute
+  '/rh/$setor/$colaboradorId': typeof AppRhSetorColaboradorIdRouteWithChildren
+  '/rh/$setor/$colaboradorId/documento/$tipo': typeof AppRhSetorColaboradorIdDocumentoTipoRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -202,7 +211,8 @@ export interface FileRoutesById {
   '/_app/senhas-links': typeof AppSenhasLinksRoute
   '/_app/usuarios': typeof AppUsuariosRoute
   '/_app/rh/$setor': typeof AppRhSetorRouteWithChildren
-  '/_app/rh/$setor/$colaboradorId': typeof AppRhSetorColaboradorIdRoute
+  '/_app/rh/$setor/$colaboradorId': typeof AppRhSetorColaboradorIdRouteWithChildren
+  '/_app/rh/$setor/$colaboradorId/documento/$tipo': typeof AppRhSetorColaboradorIdDocumentoTipoRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -227,6 +237,7 @@ export interface FileRouteTypes {
     | '/usuarios'
     | '/rh/$setor'
     | '/rh/$setor/$colaboradorId'
+    | '/rh/$setor/$colaboradorId/documento/$tipo'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -249,6 +260,7 @@ export interface FileRouteTypes {
     | '/usuarios'
     | '/rh/$setor'
     | '/rh/$setor/$colaboradorId'
+    | '/rh/$setor/$colaboradorId/documento/$tipo'
   id:
     | '__root__'
     | '/'
@@ -272,6 +284,7 @@ export interface FileRouteTypes {
     | '/_app/usuarios'
     | '/_app/rh/$setor'
     | '/_app/rh/$setor/$colaboradorId'
+    | '/_app/rh/$setor/$colaboradorId/documento/$tipo'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -429,15 +442,37 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppRhSetorColaboradorIdRouteImport
       parentRoute: typeof AppRhSetorRoute
     }
+    '/_app/rh/$setor/$colaboradorId/documento/$tipo': {
+      id: '/_app/rh/$setor/$colaboradorId/documento/$tipo'
+      path: '/documento/$tipo'
+      fullPath: '/rh/$setor/$colaboradorId/documento/$tipo'
+      preLoaderRoute: typeof AppRhSetorColaboradorIdDocumentoTipoRouteImport
+      parentRoute: typeof AppRhSetorColaboradorIdRoute
+    }
   }
 }
 
+interface AppRhSetorColaboradorIdRouteChildren {
+  AppRhSetorColaboradorIdDocumentoTipoRoute: typeof AppRhSetorColaboradorIdDocumentoTipoRoute
+}
+
+const AppRhSetorColaboradorIdRouteChildren: AppRhSetorColaboradorIdRouteChildren =
+  {
+    AppRhSetorColaboradorIdDocumentoTipoRoute:
+      AppRhSetorColaboradorIdDocumentoTipoRoute,
+  }
+
+const AppRhSetorColaboradorIdRouteWithChildren =
+  AppRhSetorColaboradorIdRoute._addFileChildren(
+    AppRhSetorColaboradorIdRouteChildren,
+  )
+
 interface AppRhSetorRouteChildren {
-  AppRhSetorColaboradorIdRoute: typeof AppRhSetorColaboradorIdRoute
+  AppRhSetorColaboradorIdRoute: typeof AppRhSetorColaboradorIdRouteWithChildren
 }
 
 const AppRhSetorRouteChildren: AppRhSetorRouteChildren = {
-  AppRhSetorColaboradorIdRoute: AppRhSetorColaboradorIdRoute,
+  AppRhSetorColaboradorIdRoute: AppRhSetorColaboradorIdRouteWithChildren,
 }
 
 const AppRhSetorRouteWithChildren = AppRhSetorRoute._addFileChildren(
