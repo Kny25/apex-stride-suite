@@ -28,6 +28,9 @@ import { Route as AppConfiguracoesRouteImport } from './routes/_app/configuracoe
 import { Route as AppComercialRouteImport } from './routes/_app/comercial'
 import { Route as AppCalendarioRouteImport } from './routes/_app/calendario'
 import { Route as AppAlunosRouteImport } from './routes/_app/alunos'
+import { Route as AppRhSetorRouteImport } from './routes/_app/rh.$setor'
+import { Route as AppRhSetorColaboradorIdRouteImport } from './routes/_app/rh.$setor.$colaboradorId'
+import { Route as AppRhSetorColaboradorIdDocumentoTipoRouteImport } from './routes/_app/rh.$setor.$colaboradorId.documento.$tipo'
 
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
@@ -123,6 +126,22 @@ const AppAlunosRoute = AppAlunosRouteImport.update({
   path: '/alunos',
   getParentRoute: () => AppRoute,
 } as any)
+const AppRhSetorRoute = AppRhSetorRouteImport.update({
+  id: '/$setor',
+  path: '/$setor',
+  getParentRoute: () => AppRhRoute,
+} as any)
+const AppRhSetorColaboradorIdRoute = AppRhSetorColaboradorIdRouteImport.update({
+  id: '/$colaboradorId',
+  path: '/$colaboradorId',
+  getParentRoute: () => AppRhSetorRoute,
+} as any)
+const AppRhSetorColaboradorIdDocumentoTipoRoute =
+  AppRhSetorColaboradorIdDocumentoTipoRouteImport.update({
+    id: '/documento/$tipo',
+    path: '/documento/$tipo',
+    getParentRoute: () => AppRhSetorColaboradorIdRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -140,9 +159,12 @@ export interface FileRoutesByFullPath {
   '/pedagogico': typeof AppPedagogicoRoute
   '/perfil': typeof AppPerfilRoute
   '/relatorios': typeof AppRelatoriosRoute
-  '/rh': typeof AppRhRoute
+  '/rh': typeof AppRhRouteWithChildren
   '/senhas-links': typeof AppSenhasLinksRoute
   '/usuarios': typeof AppUsuariosRoute
+  '/rh/$setor': typeof AppRhSetorRouteWithChildren
+  '/rh/$setor/$colaboradorId': typeof AppRhSetorColaboradorIdRouteWithChildren
+  '/rh/$setor/$colaboradorId/documento/$tipo': typeof AppRhSetorColaboradorIdDocumentoTipoRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -160,9 +182,12 @@ export interface FileRoutesByTo {
   '/pedagogico': typeof AppPedagogicoRoute
   '/perfil': typeof AppPerfilRoute
   '/relatorios': typeof AppRelatoriosRoute
-  '/rh': typeof AppRhRoute
+  '/rh': typeof AppRhRouteWithChildren
   '/senhas-links': typeof AppSenhasLinksRoute
   '/usuarios': typeof AppUsuariosRoute
+  '/rh/$setor': typeof AppRhSetorRouteWithChildren
+  '/rh/$setor/$colaboradorId': typeof AppRhSetorColaboradorIdRouteWithChildren
+  '/rh/$setor/$colaboradorId/documento/$tipo': typeof AppRhSetorColaboradorIdDocumentoTipoRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -182,9 +207,12 @@ export interface FileRoutesById {
   '/_app/pedagogico': typeof AppPedagogicoRoute
   '/_app/perfil': typeof AppPerfilRoute
   '/_app/relatorios': typeof AppRelatoriosRoute
-  '/_app/rh': typeof AppRhRoute
+  '/_app/rh': typeof AppRhRouteWithChildren
   '/_app/senhas-links': typeof AppSenhasLinksRoute
   '/_app/usuarios': typeof AppUsuariosRoute
+  '/_app/rh/$setor': typeof AppRhSetorRouteWithChildren
+  '/_app/rh/$setor/$colaboradorId': typeof AppRhSetorColaboradorIdRouteWithChildren
+  '/_app/rh/$setor/$colaboradorId/documento/$tipo': typeof AppRhSetorColaboradorIdDocumentoTipoRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -207,6 +235,9 @@ export interface FileRouteTypes {
     | '/rh'
     | '/senhas-links'
     | '/usuarios'
+    | '/rh/$setor'
+    | '/rh/$setor/$colaboradorId'
+    | '/rh/$setor/$colaboradorId/documento/$tipo'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -227,6 +258,9 @@ export interface FileRouteTypes {
     | '/rh'
     | '/senhas-links'
     | '/usuarios'
+    | '/rh/$setor'
+    | '/rh/$setor/$colaboradorId'
+    | '/rh/$setor/$colaboradorId/documento/$tipo'
   id:
     | '__root__'
     | '/'
@@ -248,6 +282,9 @@ export interface FileRouteTypes {
     | '/_app/rh'
     | '/_app/senhas-links'
     | '/_app/usuarios'
+    | '/_app/rh/$setor'
+    | '/_app/rh/$setor/$colaboradorId'
+    | '/_app/rh/$setor/$colaboradorId/documento/$tipo'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -391,8 +428,66 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppAlunosRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/rh/$setor': {
+      id: '/_app/rh/$setor'
+      path: '/$setor'
+      fullPath: '/rh/$setor'
+      preLoaderRoute: typeof AppRhSetorRouteImport
+      parentRoute: typeof AppRhRoute
+    }
+    '/_app/rh/$setor/$colaboradorId': {
+      id: '/_app/rh/$setor/$colaboradorId'
+      path: '/$colaboradorId'
+      fullPath: '/rh/$setor/$colaboradorId'
+      preLoaderRoute: typeof AppRhSetorColaboradorIdRouteImport
+      parentRoute: typeof AppRhSetorRoute
+    }
+    '/_app/rh/$setor/$colaboradorId/documento/$tipo': {
+      id: '/_app/rh/$setor/$colaboradorId/documento/$tipo'
+      path: '/documento/$tipo'
+      fullPath: '/rh/$setor/$colaboradorId/documento/$tipo'
+      preLoaderRoute: typeof AppRhSetorColaboradorIdDocumentoTipoRouteImport
+      parentRoute: typeof AppRhSetorColaboradorIdRoute
+    }
   }
 }
+
+interface AppRhSetorColaboradorIdRouteChildren {
+  AppRhSetorColaboradorIdDocumentoTipoRoute: typeof AppRhSetorColaboradorIdDocumentoTipoRoute
+}
+
+const AppRhSetorColaboradorIdRouteChildren: AppRhSetorColaboradorIdRouteChildren =
+  {
+    AppRhSetorColaboradorIdDocumentoTipoRoute:
+      AppRhSetorColaboradorIdDocumentoTipoRoute,
+  }
+
+const AppRhSetorColaboradorIdRouteWithChildren =
+  AppRhSetorColaboradorIdRoute._addFileChildren(
+    AppRhSetorColaboradorIdRouteChildren,
+  )
+
+interface AppRhSetorRouteChildren {
+  AppRhSetorColaboradorIdRoute: typeof AppRhSetorColaboradorIdRouteWithChildren
+}
+
+const AppRhSetorRouteChildren: AppRhSetorRouteChildren = {
+  AppRhSetorColaboradorIdRoute: AppRhSetorColaboradorIdRouteWithChildren,
+}
+
+const AppRhSetorRouteWithChildren = AppRhSetorRoute._addFileChildren(
+  AppRhSetorRouteChildren,
+)
+
+interface AppRhRouteChildren {
+  AppRhSetorRoute: typeof AppRhSetorRouteWithChildren
+}
+
+const AppRhRouteChildren: AppRhRouteChildren = {
+  AppRhSetorRoute: AppRhSetorRouteWithChildren,
+}
+
+const AppRhRouteWithChildren = AppRhRoute._addFileChildren(AppRhRouteChildren)
 
 interface AppRouteChildren {
   AppAlunosRoute: typeof AppAlunosRoute
@@ -408,7 +503,7 @@ interface AppRouteChildren {
   AppPedagogicoRoute: typeof AppPedagogicoRoute
   AppPerfilRoute: typeof AppPerfilRoute
   AppRelatoriosRoute: typeof AppRelatoriosRoute
-  AppRhRoute: typeof AppRhRoute
+  AppRhRoute: typeof AppRhRouteWithChildren
   AppSenhasLinksRoute: typeof AppSenhasLinksRoute
   AppUsuariosRoute: typeof AppUsuariosRoute
 }
@@ -427,7 +522,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppPedagogicoRoute: AppPedagogicoRoute,
   AppPerfilRoute: AppPerfilRoute,
   AppRelatoriosRoute: AppRelatoriosRoute,
-  AppRhRoute: AppRhRoute,
+  AppRhRoute: AppRhRouteWithChildren,
   AppSenhasLinksRoute: AppSenhasLinksRoute,
   AppUsuariosRoute: AppUsuariosRoute,
 }
