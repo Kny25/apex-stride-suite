@@ -15,7 +15,7 @@ import {
 } from "@/lib/rh-store";
 import { cn } from "@/lib/utils";
 
-export const Route = createFileRoute("/_app/rh/$setor")({
+export const Route = createFileRoute("/_app/rh/$setor/")({
   beforeLoad: ({ params }) => {
     if (!["administrativo", "pedagogico", "comercial", "financeiro"].includes(params.setor)) {
       throw notFound();
