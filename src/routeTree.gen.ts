@@ -29,6 +29,7 @@ import { Route as AppComercialRouteImport } from './routes/_app/comercial'
 import { Route as AppCalendarioRouteImport } from './routes/_app/calendario'
 import { Route as AppAlunosRouteImport } from './routes/_app/alunos'
 import { Route as AppRhSetorRouteImport } from './routes/_app/rh.$setor'
+import { Route as AppRhSetorColaboradorIdRouteImport } from './routes/_app/rh.$setor.$colaboradorId'
 
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
@@ -129,6 +130,11 @@ const AppRhSetorRoute = AppRhSetorRouteImport.update({
   path: '/$setor',
   getParentRoute: () => AppRhRoute,
 } as any)
+const AppRhSetorColaboradorIdRoute = AppRhSetorColaboradorIdRouteImport.update({
+  id: '/$colaboradorId',
+  path: '/$colaboradorId',
+  getParentRoute: () => AppRhSetorRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -149,7 +155,8 @@ export interface FileRoutesByFullPath {
   '/rh': typeof AppRhRouteWithChildren
   '/senhas-links': typeof AppSenhasLinksRoute
   '/usuarios': typeof AppUsuariosRoute
-  '/rh/$setor': typeof AppRhSetorRoute
+  '/rh/$setor': typeof AppRhSetorRouteWithChildren
+  '/rh/$setor/$colaboradorId': typeof AppRhSetorColaboradorIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -170,7 +177,8 @@ export interface FileRoutesByTo {
   '/rh': typeof AppRhRouteWithChildren
   '/senhas-links': typeof AppSenhasLinksRoute
   '/usuarios': typeof AppUsuariosRoute
-  '/rh/$setor': typeof AppRhSetorRoute
+  '/rh/$setor': typeof AppRhSetorRouteWithChildren
+  '/rh/$setor/$colaboradorId': typeof AppRhSetorColaboradorIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -193,7 +201,8 @@ export interface FileRoutesById {
   '/_app/rh': typeof AppRhRouteWithChildren
   '/_app/senhas-links': typeof AppSenhasLinksRoute
   '/_app/usuarios': typeof AppUsuariosRoute
-  '/_app/rh/$setor': typeof AppRhSetorRoute
+  '/_app/rh/$setor': typeof AppRhSetorRouteWithChildren
+  '/_app/rh/$setor/$colaboradorId': typeof AppRhSetorColaboradorIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -217,6 +226,7 @@ export interface FileRouteTypes {
     | '/senhas-links'
     | '/usuarios'
     | '/rh/$setor'
+    | '/rh/$setor/$colaboradorId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -238,6 +248,7 @@ export interface FileRouteTypes {
     | '/senhas-links'
     | '/usuarios'
     | '/rh/$setor'
+    | '/rh/$setor/$colaboradorId'
   id:
     | '__root__'
     | '/'
@@ -260,6 +271,7 @@ export interface FileRouteTypes {
     | '/_app/senhas-links'
     | '/_app/usuarios'
     | '/_app/rh/$setor'
+    | '/_app/rh/$setor/$colaboradorId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -410,15 +422,34 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppRhSetorRouteImport
       parentRoute: typeof AppRhRoute
     }
+    '/_app/rh/$setor/$colaboradorId': {
+      id: '/_app/rh/$setor/$colaboradorId'
+      path: '/$colaboradorId'
+      fullPath: '/rh/$setor/$colaboradorId'
+      preLoaderRoute: typeof AppRhSetorColaboradorIdRouteImport
+      parentRoute: typeof AppRhSetorRoute
+    }
   }
 }
 
+interface AppRhSetorRouteChildren {
+  AppRhSetorColaboradorIdRoute: typeof AppRhSetorColaboradorIdRoute
+}
+
+const AppRhSetorRouteChildren: AppRhSetorRouteChildren = {
+  AppRhSetorColaboradorIdRoute: AppRhSetorColaboradorIdRoute,
+}
+
+const AppRhSetorRouteWithChildren = AppRhSetorRoute._addFileChildren(
+  AppRhSetorRouteChildren,
+)
+
 interface AppRhRouteChildren {
-  AppRhSetorRoute: typeof AppRhSetorRoute
+  AppRhSetorRoute: typeof AppRhSetorRouteWithChildren
 }
 
 const AppRhRouteChildren: AppRhRouteChildren = {
-  AppRhSetorRoute: AppRhSetorRoute,
+  AppRhSetorRoute: AppRhSetorRouteWithChildren,
 }
 
 const AppRhRouteWithChildren = AppRhRoute._addFileChildren(AppRhRouteChildren)
