@@ -37,6 +37,8 @@ function DocumentoPage() {
   const e = useEmployee(colaboradorId);
   const title = docTitles[tipo];
   const [generated, setGenerated] = useState(false);
+  useFormDataTick();
+  void generated;
 
   if (!e) {
     return (
