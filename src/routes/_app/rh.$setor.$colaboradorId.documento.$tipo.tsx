@@ -131,18 +131,27 @@ function DocForm({ tipo, employee, onGenerate, onGeneratePrint }: {
   );
 }
 
-// Field stores per type — use simple FormDataset via context? For brevity, share via window-scope module store
+// Reactive per-tipo form store so the preview re-renders on field changes.
 const formData: Record<string, Record<string, unknown>> = {};
+const fdListeners = new Set<() => void>();
 function setFD(tipo: string, key: string, value: unknown) {
   formData[tipo] = { ...(formData[tipo] || {}), [key]: value };
+  fdListeners.forEach((l) => l());
 }
 function getFD<T>(tipo: string, key: string, fallback: T): T {
   return (formData[tipo]?.[key] as T) ?? fallback;
 }
-
+function useFormDataTick() {
+  return useSyncExternalStore(
+    (l) => { fdListeners.add(l); return () => { fdListeners.delete(l); }; },
+    () => formData,
+    () => formData,
+  );
+}
 function useField<T>(tipo: string, key: string, init: T) {
-  const [v, setV] = useState<T>(getFD(tipo, key, init));
-  return [v, (nv: T) => { setV(nv); setFD(tipo, key, nv); }] as const;
+  useFormDataTick();
+  const v = getFD<T>(tipo, key, init);
+  return [v, (nv: T) => setFD(tipo, key, nv)] as const;
 }
 
 /* Field groups */
