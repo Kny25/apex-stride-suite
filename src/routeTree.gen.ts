@@ -28,6 +28,7 @@ import { Route as AppConfiguracoesRouteImport } from './routes/_app/configuracoe
 import { Route as AppComercialRouteImport } from './routes/_app/comercial'
 import { Route as AppCalendarioRouteImport } from './routes/_app/calendario'
 import { Route as AppAlunosRouteImport } from './routes/_app/alunos'
+import { Route as AppRhIndexRouteImport } from './routes/_app/rh.index'
 import { Route as AppRhSetorRouteImport } from './routes/_app/rh.$setor'
 import { Route as AppRhSetorColaboradorIdRouteImport } from './routes/_app/rh.$setor.$colaboradorId'
 import { Route as AppRhSetorColaboradorIdDocumentoTipoRouteImport } from './routes/_app/rh.$setor.$colaboradorId.documento.$tipo'
@@ -126,6 +127,11 @@ const AppAlunosRoute = AppAlunosRouteImport.update({
   path: '/alunos',
   getParentRoute: () => AppRoute,
 } as any)
+const AppRhIndexRoute = AppRhIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AppRhRoute,
+} as any)
 const AppRhSetorRoute = AppRhSetorRouteImport.update({
   id: '/$setor',
   path: '/$setor',
@@ -163,6 +169,7 @@ export interface FileRoutesByFullPath {
   '/senhas-links': typeof AppSenhasLinksRoute
   '/usuarios': typeof AppUsuariosRoute
   '/rh/$setor': typeof AppRhSetorRouteWithChildren
+  '/rh/': typeof AppRhIndexRoute
   '/rh/$setor/$colaboradorId': typeof AppRhSetorColaboradorIdRouteWithChildren
   '/rh/$setor/$colaboradorId/documento/$tipo': typeof AppRhSetorColaboradorIdDocumentoTipoRoute
 }
@@ -182,10 +189,10 @@ export interface FileRoutesByTo {
   '/pedagogico': typeof AppPedagogicoRoute
   '/perfil': typeof AppPerfilRoute
   '/relatorios': typeof AppRelatoriosRoute
-  '/rh': typeof AppRhRouteWithChildren
   '/senhas-links': typeof AppSenhasLinksRoute
   '/usuarios': typeof AppUsuariosRoute
   '/rh/$setor': typeof AppRhSetorRouteWithChildren
+  '/rh': typeof AppRhIndexRoute
   '/rh/$setor/$colaboradorId': typeof AppRhSetorColaboradorIdRouteWithChildren
   '/rh/$setor/$colaboradorId/documento/$tipo': typeof AppRhSetorColaboradorIdDocumentoTipoRoute
 }
@@ -211,6 +218,7 @@ export interface FileRoutesById {
   '/_app/senhas-links': typeof AppSenhasLinksRoute
   '/_app/usuarios': typeof AppUsuariosRoute
   '/_app/rh/$setor': typeof AppRhSetorRouteWithChildren
+  '/_app/rh/': typeof AppRhIndexRoute
   '/_app/rh/$setor/$colaboradorId': typeof AppRhSetorColaboradorIdRouteWithChildren
   '/_app/rh/$setor/$colaboradorId/documento/$tipo': typeof AppRhSetorColaboradorIdDocumentoTipoRoute
 }
@@ -236,6 +244,7 @@ export interface FileRouteTypes {
     | '/senhas-links'
     | '/usuarios'
     | '/rh/$setor'
+    | '/rh/'
     | '/rh/$setor/$colaboradorId'
     | '/rh/$setor/$colaboradorId/documento/$tipo'
   fileRoutesByTo: FileRoutesByTo
@@ -255,10 +264,10 @@ export interface FileRouteTypes {
     | '/pedagogico'
     | '/perfil'
     | '/relatorios'
-    | '/rh'
     | '/senhas-links'
     | '/usuarios'
     | '/rh/$setor'
+    | '/rh'
     | '/rh/$setor/$colaboradorId'
     | '/rh/$setor/$colaboradorId/documento/$tipo'
   id:
@@ -283,6 +292,7 @@ export interface FileRouteTypes {
     | '/_app/senhas-links'
     | '/_app/usuarios'
     | '/_app/rh/$setor'
+    | '/_app/rh/'
     | '/_app/rh/$setor/$colaboradorId'
     | '/_app/rh/$setor/$colaboradorId/documento/$tipo'
   fileRoutesById: FileRoutesById
@@ -428,6 +438,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppAlunosRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/rh/': {
+      id: '/_app/rh/'
+      path: '/'
+      fullPath: '/rh/'
+      preLoaderRoute: typeof AppRhIndexRouteImport
+      parentRoute: typeof AppRhRoute
+    }
     '/_app/rh/$setor': {
       id: '/_app/rh/$setor'
       path: '/$setor'
@@ -481,10 +498,12 @@ const AppRhSetorRouteWithChildren = AppRhSetorRoute._addFileChildren(
 
 interface AppRhRouteChildren {
   AppRhSetorRoute: typeof AppRhSetorRouteWithChildren
+  AppRhIndexRoute: typeof AppRhIndexRoute
 }
 
 const AppRhRouteChildren: AppRhRouteChildren = {
   AppRhSetorRoute: AppRhSetorRouteWithChildren,
+  AppRhIndexRoute: AppRhIndexRoute,
 }
 
 const AppRhRouteWithChildren = AppRhRoute._addFileChildren(AppRhRouteChildren)
