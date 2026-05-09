@@ -28,6 +28,7 @@ import { Route as AppConfiguracoesRouteImport } from './routes/_app/configuracoe
 import { Route as AppComercialRouteImport } from './routes/_app/comercial'
 import { Route as AppCalendarioRouteImport } from './routes/_app/calendario'
 import { Route as AppAlunosRouteImport } from './routes/_app/alunos'
+import { Route as AppRhSetorRouteImport } from './routes/_app/rh.$setor'
 
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
@@ -123,6 +124,11 @@ const AppAlunosRoute = AppAlunosRouteImport.update({
   path: '/alunos',
   getParentRoute: () => AppRoute,
 } as any)
+const AppRhSetorRoute = AppRhSetorRouteImport.update({
+  id: '/$setor',
+  path: '/$setor',
+  getParentRoute: () => AppRhRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -140,9 +146,10 @@ export interface FileRoutesByFullPath {
   '/pedagogico': typeof AppPedagogicoRoute
   '/perfil': typeof AppPerfilRoute
   '/relatorios': typeof AppRelatoriosRoute
-  '/rh': typeof AppRhRoute
+  '/rh': typeof AppRhRouteWithChildren
   '/senhas-links': typeof AppSenhasLinksRoute
   '/usuarios': typeof AppUsuariosRoute
+  '/rh/$setor': typeof AppRhSetorRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -160,9 +167,10 @@ export interface FileRoutesByTo {
   '/pedagogico': typeof AppPedagogicoRoute
   '/perfil': typeof AppPerfilRoute
   '/relatorios': typeof AppRelatoriosRoute
-  '/rh': typeof AppRhRoute
+  '/rh': typeof AppRhRouteWithChildren
   '/senhas-links': typeof AppSenhasLinksRoute
   '/usuarios': typeof AppUsuariosRoute
+  '/rh/$setor': typeof AppRhSetorRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -182,9 +190,10 @@ export interface FileRoutesById {
   '/_app/pedagogico': typeof AppPedagogicoRoute
   '/_app/perfil': typeof AppPerfilRoute
   '/_app/relatorios': typeof AppRelatoriosRoute
-  '/_app/rh': typeof AppRhRoute
+  '/_app/rh': typeof AppRhRouteWithChildren
   '/_app/senhas-links': typeof AppSenhasLinksRoute
   '/_app/usuarios': typeof AppUsuariosRoute
+  '/_app/rh/$setor': typeof AppRhSetorRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -207,6 +216,7 @@ export interface FileRouteTypes {
     | '/rh'
     | '/senhas-links'
     | '/usuarios'
+    | '/rh/$setor'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -227,6 +237,7 @@ export interface FileRouteTypes {
     | '/rh'
     | '/senhas-links'
     | '/usuarios'
+    | '/rh/$setor'
   id:
     | '__root__'
     | '/'
@@ -248,6 +259,7 @@ export interface FileRouteTypes {
     | '/_app/rh'
     | '/_app/senhas-links'
     | '/_app/usuarios'
+    | '/_app/rh/$setor'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -391,8 +403,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppAlunosRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/rh/$setor': {
+      id: '/_app/rh/$setor'
+      path: '/$setor'
+      fullPath: '/rh/$setor'
+      preLoaderRoute: typeof AppRhSetorRouteImport
+      parentRoute: typeof AppRhRoute
+    }
   }
 }
+
+interface AppRhRouteChildren {
+  AppRhSetorRoute: typeof AppRhSetorRoute
+}
+
+const AppRhRouteChildren: AppRhRouteChildren = {
+  AppRhSetorRoute: AppRhSetorRoute,
+}
+
+const AppRhRouteWithChildren = AppRhRoute._addFileChildren(AppRhRouteChildren)
 
 interface AppRouteChildren {
   AppAlunosRoute: typeof AppAlunosRoute
@@ -408,7 +437,7 @@ interface AppRouteChildren {
   AppPedagogicoRoute: typeof AppPedagogicoRoute
   AppPerfilRoute: typeof AppPerfilRoute
   AppRelatoriosRoute: typeof AppRelatoriosRoute
-  AppRhRoute: typeof AppRhRoute
+  AppRhRoute: typeof AppRhRouteWithChildren
   AppSenhasLinksRoute: typeof AppSenhasLinksRoute
   AppUsuariosRoute: typeof AppUsuariosRoute
 }
@@ -427,7 +456,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppPedagogicoRoute: AppPedagogicoRoute,
   AppPerfilRoute: AppPerfilRoute,
   AppRelatoriosRoute: AppRelatoriosRoute,
-  AppRhRoute: AppRhRoute,
+  AppRhRoute: AppRhRouteWithChildren,
   AppSenhasLinksRoute: AppSenhasLinksRoute,
   AppUsuariosRoute: AppUsuariosRoute,
 }
@@ -442,3 +471,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
