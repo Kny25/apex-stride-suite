@@ -30,7 +30,9 @@ import { Route as AppCalendarioRouteImport } from './routes/_app/calendario'
 import { Route as AppAlunosRouteImport } from './routes/_app/alunos'
 import { Route as AppRhIndexRouteImport } from './routes/_app/rh.index'
 import { Route as AppRhSetorRouteImport } from './routes/_app/rh.$setor'
+import { Route as AppRhSetorIndexRouteImport } from './routes/_app/rh.$setor.index'
 import { Route as AppRhSetorColaboradorIdRouteImport } from './routes/_app/rh.$setor.$colaboradorId'
+import { Route as AppRhSetorColaboradorIdIndexRouteImport } from './routes/_app/rh.$setor.$colaboradorId.index'
 import { Route as AppRhSetorColaboradorIdDocumentoTipoRouteImport } from './routes/_app/rh.$setor.$colaboradorId.documento.$tipo'
 
 const LoginRoute = LoginRouteImport.update({
@@ -137,11 +139,22 @@ const AppRhSetorRoute = AppRhSetorRouteImport.update({
   path: '/$setor',
   getParentRoute: () => AppRhRoute,
 } as any)
+const AppRhSetorIndexRoute = AppRhSetorIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AppRhSetorRoute,
+} as any)
 const AppRhSetorColaboradorIdRoute = AppRhSetorColaboradorIdRouteImport.update({
   id: '/$colaboradorId',
   path: '/$colaboradorId',
   getParentRoute: () => AppRhSetorRoute,
 } as any)
+const AppRhSetorColaboradorIdIndexRoute =
+  AppRhSetorColaboradorIdIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AppRhSetorColaboradorIdRoute,
+  } as any)
 const AppRhSetorColaboradorIdDocumentoTipoRoute =
   AppRhSetorColaboradorIdDocumentoTipoRouteImport.update({
     id: '/documento/$tipo',
@@ -171,6 +184,8 @@ export interface FileRoutesByFullPath {
   '/rh/$setor': typeof AppRhSetorRouteWithChildren
   '/rh/': typeof AppRhIndexRoute
   '/rh/$setor/$colaboradorId': typeof AppRhSetorColaboradorIdRouteWithChildren
+  '/rh/$setor/': typeof AppRhSetorIndexRoute
+  '/rh/$setor/$colaboradorId/': typeof AppRhSetorColaboradorIdIndexRoute
   '/rh/$setor/$colaboradorId/documento/$tipo': typeof AppRhSetorColaboradorIdDocumentoTipoRoute
 }
 export interface FileRoutesByTo {
@@ -191,9 +206,9 @@ export interface FileRoutesByTo {
   '/relatorios': typeof AppRelatoriosRoute
   '/senhas-links': typeof AppSenhasLinksRoute
   '/usuarios': typeof AppUsuariosRoute
-  '/rh/$setor': typeof AppRhSetorRouteWithChildren
   '/rh': typeof AppRhIndexRoute
-  '/rh/$setor/$colaboradorId': typeof AppRhSetorColaboradorIdRouteWithChildren
+  '/rh/$setor': typeof AppRhSetorIndexRoute
+  '/rh/$setor/$colaboradorId': typeof AppRhSetorColaboradorIdIndexRoute
   '/rh/$setor/$colaboradorId/documento/$tipo': typeof AppRhSetorColaboradorIdDocumentoTipoRoute
 }
 export interface FileRoutesById {
@@ -220,6 +235,8 @@ export interface FileRoutesById {
   '/_app/rh/$setor': typeof AppRhSetorRouteWithChildren
   '/_app/rh/': typeof AppRhIndexRoute
   '/_app/rh/$setor/$colaboradorId': typeof AppRhSetorColaboradorIdRouteWithChildren
+  '/_app/rh/$setor/': typeof AppRhSetorIndexRoute
+  '/_app/rh/$setor/$colaboradorId/': typeof AppRhSetorColaboradorIdIndexRoute
   '/_app/rh/$setor/$colaboradorId/documento/$tipo': typeof AppRhSetorColaboradorIdDocumentoTipoRoute
 }
 export interface FileRouteTypes {
@@ -246,6 +263,8 @@ export interface FileRouteTypes {
     | '/rh/$setor'
     | '/rh/'
     | '/rh/$setor/$colaboradorId'
+    | '/rh/$setor/'
+    | '/rh/$setor/$colaboradorId/'
     | '/rh/$setor/$colaboradorId/documento/$tipo'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -266,8 +285,8 @@ export interface FileRouteTypes {
     | '/relatorios'
     | '/senhas-links'
     | '/usuarios'
-    | '/rh/$setor'
     | '/rh'
+    | '/rh/$setor'
     | '/rh/$setor/$colaboradorId'
     | '/rh/$setor/$colaboradorId/documento/$tipo'
   id:
@@ -294,6 +313,8 @@ export interface FileRouteTypes {
     | '/_app/rh/$setor'
     | '/_app/rh/'
     | '/_app/rh/$setor/$colaboradorId'
+    | '/_app/rh/$setor/'
+    | '/_app/rh/$setor/$colaboradorId/'
     | '/_app/rh/$setor/$colaboradorId/documento/$tipo'
   fileRoutesById: FileRoutesById
 }
@@ -452,12 +473,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppRhSetorRouteImport
       parentRoute: typeof AppRhRoute
     }
+    '/_app/rh/$setor/': {
+      id: '/_app/rh/$setor/'
+      path: '/'
+      fullPath: '/rh/$setor/'
+      preLoaderRoute: typeof AppRhSetorIndexRouteImport
+      parentRoute: typeof AppRhSetorRoute
+    }
     '/_app/rh/$setor/$colaboradorId': {
       id: '/_app/rh/$setor/$colaboradorId'
       path: '/$colaboradorId'
       fullPath: '/rh/$setor/$colaboradorId'
       preLoaderRoute: typeof AppRhSetorColaboradorIdRouteImport
       parentRoute: typeof AppRhSetorRoute
+    }
+    '/_app/rh/$setor/$colaboradorId/': {
+      id: '/_app/rh/$setor/$colaboradorId/'
+      path: '/'
+      fullPath: '/rh/$setor/$colaboradorId/'
+      preLoaderRoute: typeof AppRhSetorColaboradorIdIndexRouteImport
+      parentRoute: typeof AppRhSetorColaboradorIdRoute
     }
     '/_app/rh/$setor/$colaboradorId/documento/$tipo': {
       id: '/_app/rh/$setor/$colaboradorId/documento/$tipo'
@@ -470,11 +505,13 @@ declare module '@tanstack/react-router' {
 }
 
 interface AppRhSetorColaboradorIdRouteChildren {
+  AppRhSetorColaboradorIdIndexRoute: typeof AppRhSetorColaboradorIdIndexRoute
   AppRhSetorColaboradorIdDocumentoTipoRoute: typeof AppRhSetorColaboradorIdDocumentoTipoRoute
 }
 
 const AppRhSetorColaboradorIdRouteChildren: AppRhSetorColaboradorIdRouteChildren =
   {
+    AppRhSetorColaboradorIdIndexRoute: AppRhSetorColaboradorIdIndexRoute,
     AppRhSetorColaboradorIdDocumentoTipoRoute:
       AppRhSetorColaboradorIdDocumentoTipoRoute,
   }
@@ -486,10 +523,12 @@ const AppRhSetorColaboradorIdRouteWithChildren =
 
 interface AppRhSetorRouteChildren {
   AppRhSetorColaboradorIdRoute: typeof AppRhSetorColaboradorIdRouteWithChildren
+  AppRhSetorIndexRoute: typeof AppRhSetorIndexRoute
 }
 
 const AppRhSetorRouteChildren: AppRhSetorRouteChildren = {
   AppRhSetorColaboradorIdRoute: AppRhSetorColaboradorIdRouteWithChildren,
+  AppRhSetorIndexRoute: AppRhSetorIndexRoute,
 }
 
 const AppRhSetorRouteWithChildren = AppRhSetorRoute._addFileChildren(
