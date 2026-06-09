@@ -303,6 +303,7 @@ function DashboardPage() {
                       </button>
                     </>
                   )}
+                </motion.li>
               );
             })}
           </ul>
