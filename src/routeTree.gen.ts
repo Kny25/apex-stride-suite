@@ -30,9 +30,12 @@ import { Route as AppCalendarioRouteImport } from './routes/_app/calendario'
 import { Route as AppAlunosRouteImport } from './routes/_app/alunos'
 import { Route as AppRhIndexRouteImport } from './routes/_app/rh.index'
 import { Route as AppFinanceiroIndexRouteImport } from './routes/_app/financeiro.index'
+import { Route as AppEmpresarioIndexRouteImport } from './routes/_app/empresario.index'
 import { Route as AppRhSetorRouteImport } from './routes/_app/rh.$setor'
 import { Route as AppFinanceiroContasAPagarRouteImport } from './routes/_app/financeiro.contas-a-pagar'
 import { Route as AppFinanceiroCaixaRouteImport } from './routes/_app/financeiro.caixa'
+import { Route as AppEmpresarioCursosRouteImport } from './routes/_app/empresario.cursos'
+import { Route as AppEmpresarioComparativosRouteImport } from './routes/_app/empresario.comparativos'
 import { Route as AppRhSetorIndexRouteImport } from './routes/_app/rh.$setor.index'
 import { Route as AppRhSetorColaboradorIdRouteImport } from './routes/_app/rh.$setor.$colaboradorId'
 import { Route as AppRhSetorColaboradorIdIndexRouteImport } from './routes/_app/rh.$setor.$colaboradorId.index'
@@ -142,6 +145,11 @@ const AppFinanceiroIndexRoute = AppFinanceiroIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AppFinanceiroRoute,
 } as any)
+const AppEmpresarioIndexRoute = AppEmpresarioIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AppEmpresarioRoute,
+} as any)
 const AppRhSetorRoute = AppRhSetorRouteImport.update({
   id: '/$setor',
   path: '/$setor',
@@ -158,6 +166,17 @@ const AppFinanceiroCaixaRoute = AppFinanceiroCaixaRouteImport.update({
   path: '/caixa',
   getParentRoute: () => AppFinanceiroRoute,
 } as any)
+const AppEmpresarioCursosRoute = AppEmpresarioCursosRouteImport.update({
+  id: '/cursos',
+  path: '/cursos',
+  getParentRoute: () => AppEmpresarioRoute,
+} as any)
+const AppEmpresarioComparativosRoute =
+  AppEmpresarioComparativosRouteImport.update({
+    id: '/comparativos',
+    path: '/comparativos',
+    getParentRoute: () => AppEmpresarioRoute,
+  } as any)
 const AppRhSetorIndexRoute = AppRhSetorIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -190,7 +209,7 @@ export interface FileRoutesByFullPath {
   '/configuracoes': typeof AppConfiguracoesRoute
   '/contratos': typeof AppContratosRoute
   '/dashboard': typeof AppDashboardRoute
-  '/empresario': typeof AppEmpresarioRoute
+  '/empresario': typeof AppEmpresarioRouteWithChildren
   '/financeiro': typeof AppFinanceiroRouteWithChildren
   '/ia': typeof AppIaRoute
   '/marketing': typeof AppMarketingRoute
@@ -200,9 +219,12 @@ export interface FileRoutesByFullPath {
   '/rh': typeof AppRhRouteWithChildren
   '/senhas-links': typeof AppSenhasLinksRoute
   '/usuarios': typeof AppUsuariosRoute
+  '/empresario/comparativos': typeof AppEmpresarioComparativosRoute
+  '/empresario/cursos': typeof AppEmpresarioCursosRoute
   '/financeiro/caixa': typeof AppFinanceiroCaixaRoute
   '/financeiro/contas-a-pagar': typeof AppFinanceiroContasAPagarRoute
   '/rh/$setor': typeof AppRhSetorRouteWithChildren
+  '/empresario/': typeof AppEmpresarioIndexRoute
   '/financeiro/': typeof AppFinanceiroIndexRoute
   '/rh/': typeof AppRhIndexRoute
   '/rh/$setor/$colaboradorId': typeof AppRhSetorColaboradorIdRouteWithChildren
@@ -219,7 +241,6 @@ export interface FileRoutesByTo {
   '/configuracoes': typeof AppConfiguracoesRoute
   '/contratos': typeof AppContratosRoute
   '/dashboard': typeof AppDashboardRoute
-  '/empresario': typeof AppEmpresarioRoute
   '/ia': typeof AppIaRoute
   '/marketing': typeof AppMarketingRoute
   '/pedagogico': typeof AppPedagogicoRoute
@@ -227,8 +248,11 @@ export interface FileRoutesByTo {
   '/relatorios': typeof AppRelatoriosRoute
   '/senhas-links': typeof AppSenhasLinksRoute
   '/usuarios': typeof AppUsuariosRoute
+  '/empresario/comparativos': typeof AppEmpresarioComparativosRoute
+  '/empresario/cursos': typeof AppEmpresarioCursosRoute
   '/financeiro/caixa': typeof AppFinanceiroCaixaRoute
   '/financeiro/contas-a-pagar': typeof AppFinanceiroContasAPagarRoute
+  '/empresario': typeof AppEmpresarioIndexRoute
   '/financeiro': typeof AppFinanceiroIndexRoute
   '/rh': typeof AppRhIndexRoute
   '/rh/$setor': typeof AppRhSetorIndexRoute
@@ -246,7 +270,7 @@ export interface FileRoutesById {
   '/_app/configuracoes': typeof AppConfiguracoesRoute
   '/_app/contratos': typeof AppContratosRoute
   '/_app/dashboard': typeof AppDashboardRoute
-  '/_app/empresario': typeof AppEmpresarioRoute
+  '/_app/empresario': typeof AppEmpresarioRouteWithChildren
   '/_app/financeiro': typeof AppFinanceiroRouteWithChildren
   '/_app/ia': typeof AppIaRoute
   '/_app/marketing': typeof AppMarketingRoute
@@ -256,9 +280,12 @@ export interface FileRoutesById {
   '/_app/rh': typeof AppRhRouteWithChildren
   '/_app/senhas-links': typeof AppSenhasLinksRoute
   '/_app/usuarios': typeof AppUsuariosRoute
+  '/_app/empresario/comparativos': typeof AppEmpresarioComparativosRoute
+  '/_app/empresario/cursos': typeof AppEmpresarioCursosRoute
   '/_app/financeiro/caixa': typeof AppFinanceiroCaixaRoute
   '/_app/financeiro/contas-a-pagar': typeof AppFinanceiroContasAPagarRoute
   '/_app/rh/$setor': typeof AppRhSetorRouteWithChildren
+  '/_app/empresario/': typeof AppEmpresarioIndexRoute
   '/_app/financeiro/': typeof AppFinanceiroIndexRoute
   '/_app/rh/': typeof AppRhIndexRoute
   '/_app/rh/$setor/$colaboradorId': typeof AppRhSetorColaboradorIdRouteWithChildren
@@ -287,9 +314,12 @@ export interface FileRouteTypes {
     | '/rh'
     | '/senhas-links'
     | '/usuarios'
+    | '/empresario/comparativos'
+    | '/empresario/cursos'
     | '/financeiro/caixa'
     | '/financeiro/contas-a-pagar'
     | '/rh/$setor'
+    | '/empresario/'
     | '/financeiro/'
     | '/rh/'
     | '/rh/$setor/$colaboradorId'
@@ -306,7 +336,6 @@ export interface FileRouteTypes {
     | '/configuracoes'
     | '/contratos'
     | '/dashboard'
-    | '/empresario'
     | '/ia'
     | '/marketing'
     | '/pedagogico'
@@ -314,8 +343,11 @@ export interface FileRouteTypes {
     | '/relatorios'
     | '/senhas-links'
     | '/usuarios'
+    | '/empresario/comparativos'
+    | '/empresario/cursos'
     | '/financeiro/caixa'
     | '/financeiro/contas-a-pagar'
+    | '/empresario'
     | '/financeiro'
     | '/rh'
     | '/rh/$setor'
@@ -342,9 +374,12 @@ export interface FileRouteTypes {
     | '/_app/rh'
     | '/_app/senhas-links'
     | '/_app/usuarios'
+    | '/_app/empresario/comparativos'
+    | '/_app/empresario/cursos'
     | '/_app/financeiro/caixa'
     | '/_app/financeiro/contas-a-pagar'
     | '/_app/rh/$setor'
+    | '/_app/empresario/'
     | '/_app/financeiro/'
     | '/_app/rh/'
     | '/_app/rh/$setor/$colaboradorId'
@@ -508,6 +543,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppFinanceiroIndexRouteImport
       parentRoute: typeof AppFinanceiroRoute
     }
+    '/_app/empresario/': {
+      id: '/_app/empresario/'
+      path: '/'
+      fullPath: '/empresario/'
+      preLoaderRoute: typeof AppEmpresarioIndexRouteImport
+      parentRoute: typeof AppEmpresarioRoute
+    }
     '/_app/rh/$setor': {
       id: '/_app/rh/$setor'
       path: '/$setor'
@@ -528,6 +570,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/financeiro/caixa'
       preLoaderRoute: typeof AppFinanceiroCaixaRouteImport
       parentRoute: typeof AppFinanceiroRoute
+    }
+    '/_app/empresario/cursos': {
+      id: '/_app/empresario/cursos'
+      path: '/cursos'
+      fullPath: '/empresario/cursos'
+      preLoaderRoute: typeof AppEmpresarioCursosRouteImport
+      parentRoute: typeof AppEmpresarioRoute
+    }
+    '/_app/empresario/comparativos': {
+      id: '/_app/empresario/comparativos'
+      path: '/comparativos'
+      fullPath: '/empresario/comparativos'
+      preLoaderRoute: typeof AppEmpresarioComparativosRouteImport
+      parentRoute: typeof AppEmpresarioRoute
     }
     '/_app/rh/$setor/': {
       id: '/_app/rh/$setor/'
@@ -559,6 +615,22 @@ declare module '@tanstack/react-router' {
     }
   }
 }
+
+interface AppEmpresarioRouteChildren {
+  AppEmpresarioComparativosRoute: typeof AppEmpresarioComparativosRoute
+  AppEmpresarioCursosRoute: typeof AppEmpresarioCursosRoute
+  AppEmpresarioIndexRoute: typeof AppEmpresarioIndexRoute
+}
+
+const AppEmpresarioRouteChildren: AppEmpresarioRouteChildren = {
+  AppEmpresarioComparativosRoute: AppEmpresarioComparativosRoute,
+  AppEmpresarioCursosRoute: AppEmpresarioCursosRoute,
+  AppEmpresarioIndexRoute: AppEmpresarioIndexRoute,
+}
+
+const AppEmpresarioRouteWithChildren = AppEmpresarioRoute._addFileChildren(
+  AppEmpresarioRouteChildren,
+)
 
 interface AppFinanceiroRouteChildren {
   AppFinanceiroCaixaRoute: typeof AppFinanceiroCaixaRoute
@@ -626,7 +698,7 @@ interface AppRouteChildren {
   AppConfiguracoesRoute: typeof AppConfiguracoesRoute
   AppContratosRoute: typeof AppContratosRoute
   AppDashboardRoute: typeof AppDashboardRoute
-  AppEmpresarioRoute: typeof AppEmpresarioRoute
+  AppEmpresarioRoute: typeof AppEmpresarioRouteWithChildren
   AppFinanceiroRoute: typeof AppFinanceiroRouteWithChildren
   AppIaRoute: typeof AppIaRoute
   AppMarketingRoute: typeof AppMarketingRoute
@@ -645,7 +717,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppConfiguracoesRoute: AppConfiguracoesRoute,
   AppContratosRoute: AppContratosRoute,
   AppDashboardRoute: AppDashboardRoute,
-  AppEmpresarioRoute: AppEmpresarioRoute,
+  AppEmpresarioRoute: AppEmpresarioRouteWithChildren,
   AppFinanceiroRoute: AppFinanceiroRouteWithChildren,
   AppIaRoute: AppIaRoute,
   AppMarketingRoute: AppMarketingRoute,
@@ -667,3 +739,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
