@@ -9,6 +9,9 @@ import {
   TrendingUp,
   Trash2,
   Plus,
+  Pencil,
+  Check,
+  X,
   StickyNote,
   type LucideIcon,
 } from "lucide-react";
@@ -64,6 +67,26 @@ function DashboardPage() {
   const items = useAgenda();
   const reminders = items.filter((i) => i.source === "dashboard");
   const [draft, setDraft] = useState("");
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editDraft, setEditDraft] = useState("");
+
+  const startEdit = (id: string, title: string) => {
+    setEditingId(id);
+    setEditDraft(title);
+  };
+
+  const saveEdit = () => {
+    if (!editingId) return;
+    const text = editDraft.trim();
+    if (text) agendaStore.update(editingId, { title: text });
+    setEditingId(null);
+    setEditDraft("");
+  };
+
+  const cancelEdit = () => {
+    setEditingId(null);
+    setEditDraft("");
+  };
 
   const addReminder = () => {
     const text = draft.trim();
