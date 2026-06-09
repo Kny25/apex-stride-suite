@@ -1,4 +1,5 @@
 import { useSyncExternalStore } from "react";
+import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 
 export type AgendaCategory = "reuniao" | "vencimento" | "evento" | "lembrete" | "rh";
@@ -99,7 +100,11 @@ async function loadFromDb() {
     loadStarted = false;
     return;
   }
-  items = (data ?? []).map(mapRow);
+  const dbItems = (data ?? []).map(mapRow);
+  const dbIds = new Set(dbItems.map((i) => i.id));
+  // Preserve optimistic items created while the initial load was in flight
+  const pendingLocal = items.filter((i) => !dbIds.has(i.id));
+  items = [...pendingLocal, ...dbItems];
   emit();
 }
 
