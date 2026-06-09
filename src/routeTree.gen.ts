@@ -31,6 +31,8 @@ import { Route as AppAlunosRouteImport } from './routes/_app/alunos'
 import { Route as AppRhIndexRouteImport } from './routes/_app/rh.index'
 import { Route as AppFinanceiroIndexRouteImport } from './routes/_app/financeiro.index'
 import { Route as AppRhSetorRouteImport } from './routes/_app/rh.$setor'
+import { Route as AppFinanceiroContasAPagarRouteImport } from './routes/_app/financeiro.contas-a-pagar'
+import { Route as AppFinanceiroCaixaRouteImport } from './routes/_app/financeiro.caixa'
 import { Route as AppRhSetorIndexRouteImport } from './routes/_app/rh.$setor.index'
 import { Route as AppRhSetorColaboradorIdRouteImport } from './routes/_app/rh.$setor.$colaboradorId'
 import { Route as AppRhSetorColaboradorIdIndexRouteImport } from './routes/_app/rh.$setor.$colaboradorId.index'
@@ -145,6 +147,17 @@ const AppRhSetorRoute = AppRhSetorRouteImport.update({
   path: '/$setor',
   getParentRoute: () => AppRhRoute,
 } as any)
+const AppFinanceiroContasAPagarRoute =
+  AppFinanceiroContasAPagarRouteImport.update({
+    id: '/contas-a-pagar',
+    path: '/contas-a-pagar',
+    getParentRoute: () => AppFinanceiroRoute,
+  } as any)
+const AppFinanceiroCaixaRoute = AppFinanceiroCaixaRouteImport.update({
+  id: '/caixa',
+  path: '/caixa',
+  getParentRoute: () => AppFinanceiroRoute,
+} as any)
 const AppRhSetorIndexRoute = AppRhSetorIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -187,6 +200,8 @@ export interface FileRoutesByFullPath {
   '/rh': typeof AppRhRouteWithChildren
   '/senhas-links': typeof AppSenhasLinksRoute
   '/usuarios': typeof AppUsuariosRoute
+  '/financeiro/caixa': typeof AppFinanceiroCaixaRoute
+  '/financeiro/contas-a-pagar': typeof AppFinanceiroContasAPagarRoute
   '/rh/$setor': typeof AppRhSetorRouteWithChildren
   '/financeiro/': typeof AppFinanceiroIndexRoute
   '/rh/': typeof AppRhIndexRoute
@@ -212,6 +227,8 @@ export interface FileRoutesByTo {
   '/relatorios': typeof AppRelatoriosRoute
   '/senhas-links': typeof AppSenhasLinksRoute
   '/usuarios': typeof AppUsuariosRoute
+  '/financeiro/caixa': typeof AppFinanceiroCaixaRoute
+  '/financeiro/contas-a-pagar': typeof AppFinanceiroContasAPagarRoute
   '/financeiro': typeof AppFinanceiroIndexRoute
   '/rh': typeof AppRhIndexRoute
   '/rh/$setor': typeof AppRhSetorIndexRoute
@@ -239,6 +256,8 @@ export interface FileRoutesById {
   '/_app/rh': typeof AppRhRouteWithChildren
   '/_app/senhas-links': typeof AppSenhasLinksRoute
   '/_app/usuarios': typeof AppUsuariosRoute
+  '/_app/financeiro/caixa': typeof AppFinanceiroCaixaRoute
+  '/_app/financeiro/contas-a-pagar': typeof AppFinanceiroContasAPagarRoute
   '/_app/rh/$setor': typeof AppRhSetorRouteWithChildren
   '/_app/financeiro/': typeof AppFinanceiroIndexRoute
   '/_app/rh/': typeof AppRhIndexRoute
@@ -268,6 +287,8 @@ export interface FileRouteTypes {
     | '/rh'
     | '/senhas-links'
     | '/usuarios'
+    | '/financeiro/caixa'
+    | '/financeiro/contas-a-pagar'
     | '/rh/$setor'
     | '/financeiro/'
     | '/rh/'
@@ -293,6 +314,8 @@ export interface FileRouteTypes {
     | '/relatorios'
     | '/senhas-links'
     | '/usuarios'
+    | '/financeiro/caixa'
+    | '/financeiro/contas-a-pagar'
     | '/financeiro'
     | '/rh'
     | '/rh/$setor'
@@ -319,6 +342,8 @@ export interface FileRouteTypes {
     | '/_app/rh'
     | '/_app/senhas-links'
     | '/_app/usuarios'
+    | '/_app/financeiro/caixa'
+    | '/_app/financeiro/contas-a-pagar'
     | '/_app/rh/$setor'
     | '/_app/financeiro/'
     | '/_app/rh/'
@@ -490,6 +515,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppRhSetorRouteImport
       parentRoute: typeof AppRhRoute
     }
+    '/_app/financeiro/contas-a-pagar': {
+      id: '/_app/financeiro/contas-a-pagar'
+      path: '/contas-a-pagar'
+      fullPath: '/financeiro/contas-a-pagar'
+      preLoaderRoute: typeof AppFinanceiroContasAPagarRouteImport
+      parentRoute: typeof AppFinanceiroRoute
+    }
+    '/_app/financeiro/caixa': {
+      id: '/_app/financeiro/caixa'
+      path: '/caixa'
+      fullPath: '/financeiro/caixa'
+      preLoaderRoute: typeof AppFinanceiroCaixaRouteImport
+      parentRoute: typeof AppFinanceiroRoute
+    }
     '/_app/rh/$setor/': {
       id: '/_app/rh/$setor/'
       path: '/'
@@ -522,10 +561,14 @@ declare module '@tanstack/react-router' {
 }
 
 interface AppFinanceiroRouteChildren {
+  AppFinanceiroCaixaRoute: typeof AppFinanceiroCaixaRoute
+  AppFinanceiroContasAPagarRoute: typeof AppFinanceiroContasAPagarRoute
   AppFinanceiroIndexRoute: typeof AppFinanceiroIndexRoute
 }
 
 const AppFinanceiroRouteChildren: AppFinanceiroRouteChildren = {
+  AppFinanceiroCaixaRoute: AppFinanceiroCaixaRoute,
+  AppFinanceiroContasAPagarRoute: AppFinanceiroContasAPagarRoute,
   AppFinanceiroIndexRoute: AppFinanceiroIndexRoute,
 }
 
@@ -624,3 +667,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
