@@ -1,4 +1,5 @@
 import { useSyncExternalStore } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
 export type AgendaCategory = "reuniao" | "vencimento" | "evento" | "lembrete" | "rh";
 
@@ -53,96 +54,147 @@ export const categoryMeta: Record<
   },
 };
 
-const today = () => new Date().toISOString().slice(0, 10);
-const addDays = (n: number) => {
-  const d = new Date();
-  d.setDate(d.getDate() + n);
-  return d.toISOString().slice(0, 10);
+type AgendaRow = {
+  id: string;
+  title: string;
+  date: string;
+  time: string | null;
+  category: string;
+  done: boolean;
+  source: string;
 };
 
-let items: AgendaItem[] = [
-  {
-    id: "s1",
-    title: "Confirmar pagamento da Globex S/A",
-    date: today(),
-    time: "10:00",
-    category: "vencimento",
-    done: false,
-    source: "dashboard",
-  },
-  {
-    id: "s2",
-    title: "Reunião com equipe pedagógica",
-    date: today(),
-    time: "15:00",
-    category: "reuniao",
-    done: false,
-    source: "dashboard",
-  },
-  {
-    id: "s3",
-    title: "Enviar relatório financeiro mensal",
-    date: addDays(-1),
-    category: "lembrete",
-    done: true,
-    source: "dashboard",
-  },
-  {
-    id: "s4",
-    title: "Revisar contratos a vencer esta semana",
-    date: addDays(2),
-    category: "vencimento",
-    done: false,
-    source: "dashboard",
-  },
-  {
-    id: "s5",
-    title: "Festa Junina — Escola",
-    date: addDays(5),
-    time: "18:00",
-    category: "evento",
-    done: false,
-    source: "calendar",
-  },
-  {
-    id: "s6",
-    title: "Folha de pagamento",
-    date: addDays(7),
-    category: "rh",
-    done: false,
-    source: "calendar",
-  },
-];
+const VALID_CATEGORIES: AgendaCategory[] = ["reuniao", "vencimento", "evento", "lembrete", "rh"];
+
+function mapRow(row: AgendaRow): AgendaItem {
+  return {
+    id: row.id,
+    title: row.title,
+    date: row.date,
+    time: row.time ?? undefined,
+    category: VALID_CATEGORIES.includes(row.category as AgendaCategory)
+      ? (row.category as AgendaCategory)
+      : "lembrete",
+    done: row.done,
+    source: row.source === "calendar" ? "calendar" : "dashboard",
+  };
+}
+
+const EMPTY: AgendaItem[] = [];
+let items: AgendaItem[] = EMPTY;
+let loadStarted = false;
 
 const listeners = new Set<() => void>();
 const emit = () => listeners.forEach((l) => l());
 
+async function loadFromDb() {
+  if (loadStarted) return;
+  loadStarted = true;
+  const { data, error } = await supabase
+    .from("agenda_itens")
+    .select("id, title, date, time, category, done, source")
+    .order("created_at", { ascending: false });
+  if (error) {
+    console.error("Erro ao carregar anotações:", error.message);
+    loadStarted = false;
+    return;
+  }
+  items = (data ?? []).map(mapRow);
+  emit();
+}
+
 export const agendaStore = {
   subscribe(l: () => void) {
     listeners.add(l);
+    if (typeof window !== "undefined") void loadFromDb();
     return () => listeners.delete(l);
   },
   getSnapshot() {
     return items;
   },
+  getServerSnapshot() {
+    return EMPTY;
+  },
   add(item: Omit<AgendaItem, "id">) {
-    items = [{ ...item, id: crypto.randomUUID() }, ...items];
+    const id = crypto.randomUUID();
+    const optimistic: AgendaItem = { ...item, id };
+    items = [optimistic, ...items];
     emit();
+    void supabase
+      .from("agenda_itens")
+      .insert({
+        id,
+        title: item.title,
+        date: item.date,
+        time: item.time ?? null,
+        category: item.category,
+        done: item.done,
+        source: item.source,
+      })
+      .then(({ error }) => {
+        if (error) {
+          console.error("Erro ao salvar anotação:", error.message);
+          items = items.filter((i) => i.id !== id);
+          emit();
+        }
+      });
   },
   update(id: string, patch: Partial<AgendaItem>) {
     items = items.map((i) => (i.id === id ? { ...i, ...patch } : i));
     emit();
+    void supabase
+      .from("agenda_itens")
+      .update({
+        ...(patch.title !== undefined ? { title: patch.title } : {}),
+        ...(patch.date !== undefined ? { date: patch.date } : {}),
+        ...("time" in patch ? { time: patch.time ?? null } : {}),
+        ...(patch.category !== undefined ? { category: patch.category } : {}),
+        ...(patch.done !== undefined ? { done: patch.done } : {}),
+        ...(patch.source !== undefined ? { source: patch.source } : {}),
+      })
+      .eq("id", id)
+      .then(({ error }) => {
+        if (error) console.error("Erro ao atualizar anotação:", error.message);
+      });
   },
   toggle(id: string) {
-    items = items.map((i) => (i.id === id ? { ...i, done: !i.done } : i));
+    const current = items.find((i) => i.id === id);
+    if (!current) return;
+    const done = !current.done;
+    items = items.map((i) => (i.id === id ? { ...i, done } : i));
     emit();
+    void supabase
+      .from("agenda_itens")
+      .update({ done })
+      .eq("id", id)
+      .then(({ error }) => {
+        if (error) console.error("Erro ao atualizar anotação:", error.message);
+      });
   },
   remove(id: string) {
+    const removed = items.find((i) => i.id === id);
     items = items.filter((i) => i.id !== id);
     emit();
+    void supabase
+      .from("agenda_itens")
+      .delete()
+      .eq("id", id)
+      .then(({ error }) => {
+        if (error) {
+          console.error("Erro ao excluir anotação:", error.message);
+          if (removed) {
+            items = [removed, ...items];
+            emit();
+          }
+        }
+      });
   },
 };
 
 export function useAgenda() {
-  return useSyncExternalStore(agendaStore.subscribe, agendaStore.getSnapshot, agendaStore.getSnapshot);
+  return useSyncExternalStore(
+    agendaStore.subscribe,
+    agendaStore.getSnapshot,
+    agendaStore.getServerSnapshot,
+  );
 }
