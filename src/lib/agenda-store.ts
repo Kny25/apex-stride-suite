@@ -139,6 +139,7 @@ export const agendaStore = {
       .then(({ error }) => {
         if (error) {
           console.error("Erro ao salvar anotação:", error.message);
+          toast.error("Erro ao salvar anotação: " + error.message);
           items = items.filter((i) => i.id !== id);
           emit();
         }
@@ -159,7 +160,10 @@ export const agendaStore = {
       })
       .eq("id", id)
       .then(({ error }) => {
-        if (error) console.error("Erro ao atualizar anotação:", error.message);
+        if (error) {
+          console.error("Erro ao atualizar anotação:", error.message);
+          toast.error("Erro ao atualizar anotação: " + error.message);
+        }
       });
   },
   toggle(id: string) {
@@ -173,7 +177,10 @@ export const agendaStore = {
       .update({ done })
       .eq("id", id)
       .then(({ error }) => {
-        if (error) console.error("Erro ao atualizar anotação:", error.message);
+        if (error) {
+          console.error("Erro ao atualizar anotação:", error.message);
+          toast.error("Erro ao atualizar anotação: " + error.message);
+        }
       });
   },
   remove(id: string) {
@@ -187,6 +194,7 @@ export const agendaStore = {
       .then(({ error }) => {
         if (error) {
           console.error("Erro ao excluir anotação:", error.message);
+          toast.error("Erro ao excluir anotação: " + error.message);
           if (removed) {
             items = [removed, ...items];
             emit();
