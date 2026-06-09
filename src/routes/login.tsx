@@ -30,7 +30,7 @@ function LoginPage() {
     setLoading(true);
     setTimeout(() => {
       toast.success("Bem-vinda de volta!");
-      navigate({ to: "/empresario" });
+      navigate({ to: "/dashboard" });
     }, 700);
   };
 
