@@ -14,7 +14,152 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      caixa_movimentacoes: {
+        Row: {
+          categoria: string
+          conta_id: string | null
+          created_at: string
+          data: string
+          descricao: string
+          forma_pagamento: string
+          id: string
+          observacao: string | null
+          tipo: string
+          updated_at: string
+          valor: number
+        }
+        Insert: {
+          categoria: string
+          conta_id?: string | null
+          created_at?: string
+          data?: string
+          descricao: string
+          forma_pagamento: string
+          id?: string
+          observacao?: string | null
+          tipo: string
+          updated_at?: string
+          valor?: number
+        }
+        Update: {
+          categoria?: string
+          conta_id?: string | null
+          created_at?: string
+          data?: string
+          descricao?: string
+          forma_pagamento?: string
+          id?: string
+          observacao?: string | null
+          tipo?: string
+          updated_at?: string
+          valor?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "caixa_movimentacoes_conta_id_fkey"
+            columns: ["conta_id"]
+            isOneToOne: false
+            referencedRelation: "contas_pagar"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      contas_pagar: {
+        Row: {
+          categoria: string
+          created_at: string
+          data_pagamento: string | null
+          descricao: string
+          fornecedor: string
+          grupo_parcelamento: string | null
+          id: string
+          observacoes: string | null
+          parcela_numero: number | null
+          parcela_total: number | null
+          parcelada: boolean
+          status: string
+          tipo: string
+          updated_at: string
+          valor_pago: number | null
+          valor_previsto: number
+          vencimento: string
+        }
+        Insert: {
+          categoria: string
+          created_at?: string
+          data_pagamento?: string | null
+          descricao: string
+          fornecedor: string
+          grupo_parcelamento?: string | null
+          id?: string
+          observacoes?: string | null
+          parcela_numero?: number | null
+          parcela_total?: number | null
+          parcelada?: boolean
+          status?: string
+          tipo?: string
+          updated_at?: string
+          valor_pago?: number | null
+          valor_previsto?: number
+          vencimento: string
+        }
+        Update: {
+          categoria?: string
+          created_at?: string
+          data_pagamento?: string | null
+          descricao?: string
+          fornecedor?: string
+          grupo_parcelamento?: string | null
+          id?: string
+          observacoes?: string | null
+          parcela_numero?: number | null
+          parcela_total?: number | null
+          parcelada?: boolean
+          status?: string
+          tipo?: string
+          updated_at?: string
+          valor_pago?: number | null
+          valor_previsto?: number
+          vencimento?: string
+        }
+        Relationships: []
+      }
+      folha_pagamento: {
+        Row: {
+          cargo: string
+          created_at: string
+          data_pagamento: string
+          id: string
+          nome: string
+          observacoes: string | null
+          salario: number
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          cargo: string
+          created_at?: string
+          data_pagamento: string
+          id?: string
+          nome: string
+          observacoes?: string | null
+          salario?: number
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          cargo?: string
+          created_at?: string
+          data_pagamento?: string
+          id?: string
+          nome?: string
+          observacoes?: string | null
+          salario?: number
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
