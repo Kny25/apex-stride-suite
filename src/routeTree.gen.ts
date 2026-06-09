@@ -29,6 +29,7 @@ import { Route as AppComercialRouteImport } from './routes/_app/comercial'
 import { Route as AppCalendarioRouteImport } from './routes/_app/calendario'
 import { Route as AppAlunosRouteImport } from './routes/_app/alunos'
 import { Route as AppRhIndexRouteImport } from './routes/_app/rh.index'
+import { Route as AppFinanceiroIndexRouteImport } from './routes/_app/financeiro.index'
 import { Route as AppRhSetorRouteImport } from './routes/_app/rh.$setor'
 import { Route as AppRhSetorIndexRouteImport } from './routes/_app/rh.$setor.index'
 import { Route as AppRhSetorColaboradorIdRouteImport } from './routes/_app/rh.$setor.$colaboradorId'
@@ -134,6 +135,11 @@ const AppRhIndexRoute = AppRhIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AppRhRoute,
 } as any)
+const AppFinanceiroIndexRoute = AppFinanceiroIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AppFinanceiroRoute,
+} as any)
 const AppRhSetorRoute = AppRhSetorRouteImport.update({
   id: '/$setor',
   path: '/$setor',
@@ -172,7 +178,7 @@ export interface FileRoutesByFullPath {
   '/contratos': typeof AppContratosRoute
   '/dashboard': typeof AppDashboardRoute
   '/empresario': typeof AppEmpresarioRoute
-  '/financeiro': typeof AppFinanceiroRoute
+  '/financeiro': typeof AppFinanceiroRouteWithChildren
   '/ia': typeof AppIaRoute
   '/marketing': typeof AppMarketingRoute
   '/pedagogico': typeof AppPedagogicoRoute
@@ -182,6 +188,7 @@ export interface FileRoutesByFullPath {
   '/senhas-links': typeof AppSenhasLinksRoute
   '/usuarios': typeof AppUsuariosRoute
   '/rh/$setor': typeof AppRhSetorRouteWithChildren
+  '/financeiro/': typeof AppFinanceiroIndexRoute
   '/rh/': typeof AppRhIndexRoute
   '/rh/$setor/$colaboradorId': typeof AppRhSetorColaboradorIdRouteWithChildren
   '/rh/$setor/': typeof AppRhSetorIndexRoute
@@ -198,7 +205,6 @@ export interface FileRoutesByTo {
   '/contratos': typeof AppContratosRoute
   '/dashboard': typeof AppDashboardRoute
   '/empresario': typeof AppEmpresarioRoute
-  '/financeiro': typeof AppFinanceiroRoute
   '/ia': typeof AppIaRoute
   '/marketing': typeof AppMarketingRoute
   '/pedagogico': typeof AppPedagogicoRoute
@@ -206,6 +212,7 @@ export interface FileRoutesByTo {
   '/relatorios': typeof AppRelatoriosRoute
   '/senhas-links': typeof AppSenhasLinksRoute
   '/usuarios': typeof AppUsuariosRoute
+  '/financeiro': typeof AppFinanceiroIndexRoute
   '/rh': typeof AppRhIndexRoute
   '/rh/$setor': typeof AppRhSetorIndexRoute
   '/rh/$setor/$colaboradorId': typeof AppRhSetorColaboradorIdIndexRoute
@@ -223,7 +230,7 @@ export interface FileRoutesById {
   '/_app/contratos': typeof AppContratosRoute
   '/_app/dashboard': typeof AppDashboardRoute
   '/_app/empresario': typeof AppEmpresarioRoute
-  '/_app/financeiro': typeof AppFinanceiroRoute
+  '/_app/financeiro': typeof AppFinanceiroRouteWithChildren
   '/_app/ia': typeof AppIaRoute
   '/_app/marketing': typeof AppMarketingRoute
   '/_app/pedagogico': typeof AppPedagogicoRoute
@@ -233,6 +240,7 @@ export interface FileRoutesById {
   '/_app/senhas-links': typeof AppSenhasLinksRoute
   '/_app/usuarios': typeof AppUsuariosRoute
   '/_app/rh/$setor': typeof AppRhSetorRouteWithChildren
+  '/_app/financeiro/': typeof AppFinanceiroIndexRoute
   '/_app/rh/': typeof AppRhIndexRoute
   '/_app/rh/$setor/$colaboradorId': typeof AppRhSetorColaboradorIdRouteWithChildren
   '/_app/rh/$setor/': typeof AppRhSetorIndexRoute
@@ -261,6 +269,7 @@ export interface FileRouteTypes {
     | '/senhas-links'
     | '/usuarios'
     | '/rh/$setor'
+    | '/financeiro/'
     | '/rh/'
     | '/rh/$setor/$colaboradorId'
     | '/rh/$setor/'
@@ -277,7 +286,6 @@ export interface FileRouteTypes {
     | '/contratos'
     | '/dashboard'
     | '/empresario'
-    | '/financeiro'
     | '/ia'
     | '/marketing'
     | '/pedagogico'
@@ -285,6 +293,7 @@ export interface FileRouteTypes {
     | '/relatorios'
     | '/senhas-links'
     | '/usuarios'
+    | '/financeiro'
     | '/rh'
     | '/rh/$setor'
     | '/rh/$setor/$colaboradorId'
@@ -311,6 +320,7 @@ export interface FileRouteTypes {
     | '/_app/senhas-links'
     | '/_app/usuarios'
     | '/_app/rh/$setor'
+    | '/_app/financeiro/'
     | '/_app/rh/'
     | '/_app/rh/$setor/$colaboradorId'
     | '/_app/rh/$setor/'
@@ -466,6 +476,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppRhIndexRouteImport
       parentRoute: typeof AppRhRoute
     }
+    '/_app/financeiro/': {
+      id: '/_app/financeiro/'
+      path: '/'
+      fullPath: '/financeiro/'
+      preLoaderRoute: typeof AppFinanceiroIndexRouteImport
+      parentRoute: typeof AppFinanceiroRoute
+    }
     '/_app/rh/$setor': {
       id: '/_app/rh/$setor'
       path: '/$setor'
@@ -503,6 +520,18 @@ declare module '@tanstack/react-router' {
     }
   }
 }
+
+interface AppFinanceiroRouteChildren {
+  AppFinanceiroIndexRoute: typeof AppFinanceiroIndexRoute
+}
+
+const AppFinanceiroRouteChildren: AppFinanceiroRouteChildren = {
+  AppFinanceiroIndexRoute: AppFinanceiroIndexRoute,
+}
+
+const AppFinanceiroRouteWithChildren = AppFinanceiroRoute._addFileChildren(
+  AppFinanceiroRouteChildren,
+)
 
 interface AppRhSetorColaboradorIdRouteChildren {
   AppRhSetorColaboradorIdIndexRoute: typeof AppRhSetorColaboradorIdIndexRoute
@@ -555,7 +584,7 @@ interface AppRouteChildren {
   AppContratosRoute: typeof AppContratosRoute
   AppDashboardRoute: typeof AppDashboardRoute
   AppEmpresarioRoute: typeof AppEmpresarioRoute
-  AppFinanceiroRoute: typeof AppFinanceiroRoute
+  AppFinanceiroRoute: typeof AppFinanceiroRouteWithChildren
   AppIaRoute: typeof AppIaRoute
   AppMarketingRoute: typeof AppMarketingRoute
   AppPedagogicoRoute: typeof AppPedagogicoRoute
@@ -574,7 +603,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppContratosRoute: AppContratosRoute,
   AppDashboardRoute: AppDashboardRoute,
   AppEmpresarioRoute: AppEmpresarioRoute,
-  AppFinanceiroRoute: AppFinanceiroRoute,
+  AppFinanceiroRoute: AppFinanceiroRouteWithChildren,
   AppIaRoute: AppIaRoute,
   AppMarketingRoute: AppMarketingRoute,
   AppPedagogicoRoute: AppPedagogicoRoute,
