@@ -1,4 +1,5 @@
 import { useSyncExternalStore } from "react";
+import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 
 export type AgendaCategory = "reuniao" | "vencimento" | "evento" | "lembrete" | "rh";
@@ -99,7 +100,11 @@ async function loadFromDb() {
     loadStarted = false;
     return;
   }
-  items = (data ?? []).map(mapRow);
+  const dbItems = (data ?? []).map(mapRow);
+  const dbIds = new Set(dbItems.map((i) => i.id));
+  // Preserve optimistic items created while the initial load was in flight
+  const pendingLocal = items.filter((i) => !dbIds.has(i.id));
+  items = [...pendingLocal, ...dbItems];
   emit();
 }
 
@@ -134,6 +139,7 @@ export const agendaStore = {
       .then(({ error }) => {
         if (error) {
           console.error("Erro ao salvar anotação:", error.message);
+          toast.error("Erro ao salvar anotação: " + error.message);
           items = items.filter((i) => i.id !== id);
           emit();
         }
@@ -154,7 +160,10 @@ export const agendaStore = {
       })
       .eq("id", id)
       .then(({ error }) => {
-        if (error) console.error("Erro ao atualizar anotação:", error.message);
+        if (error) {
+          console.error("Erro ao atualizar anotação:", error.message);
+          toast.error("Erro ao atualizar anotação: " + error.message);
+        }
       });
   },
   toggle(id: string) {
@@ -168,7 +177,10 @@ export const agendaStore = {
       .update({ done })
       .eq("id", id)
       .then(({ error }) => {
-        if (error) console.error("Erro ao atualizar anotação:", error.message);
+        if (error) {
+          console.error("Erro ao atualizar anotação:", error.message);
+          toast.error("Erro ao atualizar anotação: " + error.message);
+        }
       });
   },
   remove(id: string) {
@@ -182,6 +194,7 @@ export const agendaStore = {
       .then(({ error }) => {
         if (error) {
           console.error("Erro ao excluir anotação:", error.message);
+          toast.error("Erro ao excluir anotação: " + error.message);
           if (removed) {
             items = [removed, ...items];
             emit();
