@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { Briefcase, GraduationCap, TrendingUp, Wallet, AlertTriangle, ChevronRight, type LucideIcon } from "lucide-react";
 import { PageHeader } from "@/components/app/page-header";
-import { useEmployees, atestadoSituacao, type Sector } from "@/lib/rh-store";
+import { useColaboradores, useAtestadosAll, atestadoSituacao, totalAtestadoDias, type Sector } from "@/lib/rh-data";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_app/rh/")({
@@ -18,9 +18,14 @@ const sectors: { slug: Sector; name: string; desc: string; icon: LucideIcon; col
 ];
 
 function RHHome() {
-  const employees = useEmployees();
+  const { data: employees = [] } = useColaboradores();
+  const { data: atestados = [] } = useAtestadosAll();
+
   const alerts = employees
-    .map((e) => ({ e, s: atestadoSituacao(e) }))
+    .map((e) => {
+      const used = totalAtestadoDias(atestados.filter((a) => a.colaborador_id === e.id));
+      return { e, s: atestadoSituacao(used, e.limite_atestados_dias) };
+    })
     .filter((x) => x.s.tone !== "ok");
 
   return (
@@ -49,7 +54,7 @@ function RHHome() {
 
       <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4">
         {sectors.map((s, i) => {
-          const count = employees.filter((e) => e.sector === s.slug).length;
+          const count = employees.filter((e) => e.setor === s.slug).length;
           return (
             <motion.div
               key={s.slug}
