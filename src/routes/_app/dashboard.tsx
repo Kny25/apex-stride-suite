@@ -240,26 +240,69 @@ function DashboardPage() {
                     className="h-5 w-5 rounded-md"
                   />
                   <span className={cn("h-2 w-2 rounded-full", meta.dot)} />
-                  <span
-                    className={cn(
-                      "flex-1 text-sm transition-all",
-                      r.done && "text-muted-foreground line-through opacity-60",
-                    )}
-                  >
-                    {r.title}
-                  </span>
-                  {r.time && (
-                    <span className="text-xs text-muted-foreground tabular-nums">{r.time}</span>
+                  {editingId === r.id ? (
+                    <>
+                      <Input
+                        value={editDraft}
+                        onChange={(e) => setEditDraft(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") {
+                            e.preventDefault();
+                            saveEdit();
+                          }
+                          if (e.key === "Escape") cancelEdit();
+                        }}
+                        autoFocus
+                        className="h-8 flex-1 rounded-lg text-sm"
+                      />
+                      <button
+                        type="button"
+                        onClick={saveEdit}
+                        aria-label="Salvar edição"
+                        className="rounded-md p-1.5 text-emerald-600 transition-colors hover:bg-emerald-50"
+                      >
+                        <Check className="h-4 w-4" />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={cancelEdit}
+                        aria-label="Cancelar edição"
+                        className="rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-muted"
+                      >
+                        <X className="h-4 w-4" />
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <span
+                        className={cn(
+                          "flex-1 text-sm transition-all",
+                          r.done && "text-muted-foreground line-through opacity-60",
+                        )}
+                      >
+                        {r.title}
+                      </span>
+                      {r.time && (
+                        <span className="text-xs text-muted-foreground tabular-nums">{r.time}</span>
+                      )}
+                      <button
+                        type="button"
+                        onClick={() => startEdit(r.id, r.title)}
+                        aria-label="Editar anotação"
+                        className="rounded-md p-1.5 text-muted-foreground opacity-0 transition-all hover:bg-primary/10 hover:text-primary group-hover:opacity-100"
+                      >
+                        <Pencil className="h-4 w-4" />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => agendaStore.remove(r.id)}
+                        aria-label="Remover anotação"
+                        className="rounded-md p-1.5 text-muted-foreground opacity-0 transition-all hover:bg-destructive/10 hover:text-destructive group-hover:opacity-100"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </button>
+                    </>
                   )}
-                  <button
-                    type="button"
-                    onClick={() => agendaStore.remove(r.id)}
-                    aria-label="Remover anotação"
-                    className="rounded-md p-1.5 text-muted-foreground opacity-0 transition-all hover:bg-destructive/10 hover:text-destructive group-hover:opacity-100"
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </button>
-                </motion.li>
               );
             })}
           </ul>
