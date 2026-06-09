@@ -226,6 +226,45 @@ export type Database = {
         }
         Relationships: []
       }
+      empresario_cursos: {
+        Row: {
+          ativo: boolean
+          carga_horaria: string | null
+          categoria: string
+          created_at: string
+          descricao: string | null
+          id: string
+          link: string | null
+          nivel: string
+          titulo: string
+          updated_at: string
+        }
+        Insert: {
+          ativo?: boolean
+          carga_horaria?: string | null
+          categoria: string
+          created_at?: string
+          descricao?: string | null
+          id?: string
+          link?: string | null
+          nivel?: string
+          titulo: string
+          updated_at?: string
+        }
+        Update: {
+          ativo?: boolean
+          carga_horaria?: string | null
+          categoria?: string
+          created_at?: string
+          descricao?: string | null
+          id?: string
+          link?: string | null
+          nivel?: string
+          titulo?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       folha_pagamento: {
         Row: {
           cargo: string
