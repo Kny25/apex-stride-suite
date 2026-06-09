@@ -14,6 +14,42 @@ export type Database = {
   }
   public: {
     Tables: {
+      agenda_itens: {
+        Row: {
+          category: string
+          created_at: string
+          date: string
+          done: boolean
+          id: string
+          source: string
+          time: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          category?: string
+          created_at?: string
+          date: string
+          done?: boolean
+          id?: string
+          source?: string
+          time?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          date?: string
+          done?: boolean
+          id?: string
+          source?: string
+          time?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       caixa_movimentacoes: {
         Row: {
           categoria: string

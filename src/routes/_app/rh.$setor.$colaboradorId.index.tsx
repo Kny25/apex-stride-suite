@@ -200,7 +200,11 @@ function ColaboradorPage() {
 }
 
 function fmtDate(d: string) {
-  return new Date(d + (d.length === 10 ? "T12:00:00" : "")).toLocaleDateString("pt-BR");
+  // Formata sem usar Date/timezone para evitar divergência entre servidor e cliente
+  const iso = d.slice(0, 10);
+  const [y, m, day] = iso.split("-");
+  if (y && m && day) return `${day}/${m}/${y}`;
+  return d;
 }
 
 /* ============ SALARIO ============ */
