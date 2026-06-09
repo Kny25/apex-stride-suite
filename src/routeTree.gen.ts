@@ -29,7 +29,10 @@ import { Route as AppComercialRouteImport } from './routes/_app/comercial'
 import { Route as AppCalendarioRouteImport } from './routes/_app/calendario'
 import { Route as AppAlunosRouteImport } from './routes/_app/alunos'
 import { Route as AppRhIndexRouteImport } from './routes/_app/rh.index'
+import { Route as AppFinanceiroIndexRouteImport } from './routes/_app/financeiro.index'
 import { Route as AppRhSetorRouteImport } from './routes/_app/rh.$setor'
+import { Route as AppFinanceiroContasAPagarRouteImport } from './routes/_app/financeiro.contas-a-pagar'
+import { Route as AppFinanceiroCaixaRouteImport } from './routes/_app/financeiro.caixa'
 import { Route as AppRhSetorIndexRouteImport } from './routes/_app/rh.$setor.index'
 import { Route as AppRhSetorColaboradorIdRouteImport } from './routes/_app/rh.$setor.$colaboradorId'
 import { Route as AppRhSetorColaboradorIdIndexRouteImport } from './routes/_app/rh.$setor.$colaboradorId.index'
@@ -134,10 +137,26 @@ const AppRhIndexRoute = AppRhIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AppRhRoute,
 } as any)
+const AppFinanceiroIndexRoute = AppFinanceiroIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AppFinanceiroRoute,
+} as any)
 const AppRhSetorRoute = AppRhSetorRouteImport.update({
   id: '/$setor',
   path: '/$setor',
   getParentRoute: () => AppRhRoute,
+} as any)
+const AppFinanceiroContasAPagarRoute =
+  AppFinanceiroContasAPagarRouteImport.update({
+    id: '/contas-a-pagar',
+    path: '/contas-a-pagar',
+    getParentRoute: () => AppFinanceiroRoute,
+  } as any)
+const AppFinanceiroCaixaRoute = AppFinanceiroCaixaRouteImport.update({
+  id: '/caixa',
+  path: '/caixa',
+  getParentRoute: () => AppFinanceiroRoute,
 } as any)
 const AppRhSetorIndexRoute = AppRhSetorIndexRouteImport.update({
   id: '/',
@@ -172,7 +191,7 @@ export interface FileRoutesByFullPath {
   '/contratos': typeof AppContratosRoute
   '/dashboard': typeof AppDashboardRoute
   '/empresario': typeof AppEmpresarioRoute
-  '/financeiro': typeof AppFinanceiroRoute
+  '/financeiro': typeof AppFinanceiroRouteWithChildren
   '/ia': typeof AppIaRoute
   '/marketing': typeof AppMarketingRoute
   '/pedagogico': typeof AppPedagogicoRoute
@@ -181,7 +200,10 @@ export interface FileRoutesByFullPath {
   '/rh': typeof AppRhRouteWithChildren
   '/senhas-links': typeof AppSenhasLinksRoute
   '/usuarios': typeof AppUsuariosRoute
+  '/financeiro/caixa': typeof AppFinanceiroCaixaRoute
+  '/financeiro/contas-a-pagar': typeof AppFinanceiroContasAPagarRoute
   '/rh/$setor': typeof AppRhSetorRouteWithChildren
+  '/financeiro/': typeof AppFinanceiroIndexRoute
   '/rh/': typeof AppRhIndexRoute
   '/rh/$setor/$colaboradorId': typeof AppRhSetorColaboradorIdRouteWithChildren
   '/rh/$setor/': typeof AppRhSetorIndexRoute
@@ -198,7 +220,6 @@ export interface FileRoutesByTo {
   '/contratos': typeof AppContratosRoute
   '/dashboard': typeof AppDashboardRoute
   '/empresario': typeof AppEmpresarioRoute
-  '/financeiro': typeof AppFinanceiroRoute
   '/ia': typeof AppIaRoute
   '/marketing': typeof AppMarketingRoute
   '/pedagogico': typeof AppPedagogicoRoute
@@ -206,6 +227,9 @@ export interface FileRoutesByTo {
   '/relatorios': typeof AppRelatoriosRoute
   '/senhas-links': typeof AppSenhasLinksRoute
   '/usuarios': typeof AppUsuariosRoute
+  '/financeiro/caixa': typeof AppFinanceiroCaixaRoute
+  '/financeiro/contas-a-pagar': typeof AppFinanceiroContasAPagarRoute
+  '/financeiro': typeof AppFinanceiroIndexRoute
   '/rh': typeof AppRhIndexRoute
   '/rh/$setor': typeof AppRhSetorIndexRoute
   '/rh/$setor/$colaboradorId': typeof AppRhSetorColaboradorIdIndexRoute
@@ -223,7 +247,7 @@ export interface FileRoutesById {
   '/_app/contratos': typeof AppContratosRoute
   '/_app/dashboard': typeof AppDashboardRoute
   '/_app/empresario': typeof AppEmpresarioRoute
-  '/_app/financeiro': typeof AppFinanceiroRoute
+  '/_app/financeiro': typeof AppFinanceiroRouteWithChildren
   '/_app/ia': typeof AppIaRoute
   '/_app/marketing': typeof AppMarketingRoute
   '/_app/pedagogico': typeof AppPedagogicoRoute
@@ -232,7 +256,10 @@ export interface FileRoutesById {
   '/_app/rh': typeof AppRhRouteWithChildren
   '/_app/senhas-links': typeof AppSenhasLinksRoute
   '/_app/usuarios': typeof AppUsuariosRoute
+  '/_app/financeiro/caixa': typeof AppFinanceiroCaixaRoute
+  '/_app/financeiro/contas-a-pagar': typeof AppFinanceiroContasAPagarRoute
   '/_app/rh/$setor': typeof AppRhSetorRouteWithChildren
+  '/_app/financeiro/': typeof AppFinanceiroIndexRoute
   '/_app/rh/': typeof AppRhIndexRoute
   '/_app/rh/$setor/$colaboradorId': typeof AppRhSetorColaboradorIdRouteWithChildren
   '/_app/rh/$setor/': typeof AppRhSetorIndexRoute
@@ -260,7 +287,10 @@ export interface FileRouteTypes {
     | '/rh'
     | '/senhas-links'
     | '/usuarios'
+    | '/financeiro/caixa'
+    | '/financeiro/contas-a-pagar'
     | '/rh/$setor'
+    | '/financeiro/'
     | '/rh/'
     | '/rh/$setor/$colaboradorId'
     | '/rh/$setor/'
@@ -277,7 +307,6 @@ export interface FileRouteTypes {
     | '/contratos'
     | '/dashboard'
     | '/empresario'
-    | '/financeiro'
     | '/ia'
     | '/marketing'
     | '/pedagogico'
@@ -285,6 +314,9 @@ export interface FileRouteTypes {
     | '/relatorios'
     | '/senhas-links'
     | '/usuarios'
+    | '/financeiro/caixa'
+    | '/financeiro/contas-a-pagar'
+    | '/financeiro'
     | '/rh'
     | '/rh/$setor'
     | '/rh/$setor/$colaboradorId'
@@ -310,7 +342,10 @@ export interface FileRouteTypes {
     | '/_app/rh'
     | '/_app/senhas-links'
     | '/_app/usuarios'
+    | '/_app/financeiro/caixa'
+    | '/_app/financeiro/contas-a-pagar'
     | '/_app/rh/$setor'
+    | '/_app/financeiro/'
     | '/_app/rh/'
     | '/_app/rh/$setor/$colaboradorId'
     | '/_app/rh/$setor/'
@@ -466,12 +501,33 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppRhIndexRouteImport
       parentRoute: typeof AppRhRoute
     }
+    '/_app/financeiro/': {
+      id: '/_app/financeiro/'
+      path: '/'
+      fullPath: '/financeiro/'
+      preLoaderRoute: typeof AppFinanceiroIndexRouteImport
+      parentRoute: typeof AppFinanceiroRoute
+    }
     '/_app/rh/$setor': {
       id: '/_app/rh/$setor'
       path: '/$setor'
       fullPath: '/rh/$setor'
       preLoaderRoute: typeof AppRhSetorRouteImport
       parentRoute: typeof AppRhRoute
+    }
+    '/_app/financeiro/contas-a-pagar': {
+      id: '/_app/financeiro/contas-a-pagar'
+      path: '/contas-a-pagar'
+      fullPath: '/financeiro/contas-a-pagar'
+      preLoaderRoute: typeof AppFinanceiroContasAPagarRouteImport
+      parentRoute: typeof AppFinanceiroRoute
+    }
+    '/_app/financeiro/caixa': {
+      id: '/_app/financeiro/caixa'
+      path: '/caixa'
+      fullPath: '/financeiro/caixa'
+      preLoaderRoute: typeof AppFinanceiroCaixaRouteImport
+      parentRoute: typeof AppFinanceiroRoute
     }
     '/_app/rh/$setor/': {
       id: '/_app/rh/$setor/'
@@ -503,6 +559,22 @@ declare module '@tanstack/react-router' {
     }
   }
 }
+
+interface AppFinanceiroRouteChildren {
+  AppFinanceiroCaixaRoute: typeof AppFinanceiroCaixaRoute
+  AppFinanceiroContasAPagarRoute: typeof AppFinanceiroContasAPagarRoute
+  AppFinanceiroIndexRoute: typeof AppFinanceiroIndexRoute
+}
+
+const AppFinanceiroRouteChildren: AppFinanceiroRouteChildren = {
+  AppFinanceiroCaixaRoute: AppFinanceiroCaixaRoute,
+  AppFinanceiroContasAPagarRoute: AppFinanceiroContasAPagarRoute,
+  AppFinanceiroIndexRoute: AppFinanceiroIndexRoute,
+}
+
+const AppFinanceiroRouteWithChildren = AppFinanceiroRoute._addFileChildren(
+  AppFinanceiroRouteChildren,
+)
 
 interface AppRhSetorColaboradorIdRouteChildren {
   AppRhSetorColaboradorIdIndexRoute: typeof AppRhSetorColaboradorIdIndexRoute
@@ -555,7 +627,7 @@ interface AppRouteChildren {
   AppContratosRoute: typeof AppContratosRoute
   AppDashboardRoute: typeof AppDashboardRoute
   AppEmpresarioRoute: typeof AppEmpresarioRoute
-  AppFinanceiroRoute: typeof AppFinanceiroRoute
+  AppFinanceiroRoute: typeof AppFinanceiroRouteWithChildren
   AppIaRoute: typeof AppIaRoute
   AppMarketingRoute: typeof AppMarketingRoute
   AppPedagogicoRoute: typeof AppPedagogicoRoute
@@ -574,7 +646,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppContratosRoute: AppContratosRoute,
   AppDashboardRoute: AppDashboardRoute,
   AppEmpresarioRoute: AppEmpresarioRoute,
-  AppFinanceiroRoute: AppFinanceiroRoute,
+  AppFinanceiroRoute: AppFinanceiroRouteWithChildren,
   AppIaRoute: AppIaRoute,
   AppMarketingRoute: AppMarketingRoute,
   AppPedagogicoRoute: AppPedagogicoRoute,
