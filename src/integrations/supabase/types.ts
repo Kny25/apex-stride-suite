@@ -64,6 +64,72 @@ export type Database = {
           },
         ]
       }
+      colaboradores: {
+        Row: {
+          admissao: string
+          ativo: boolean
+          cargo: string
+          cpf: string | null
+          created_at: string
+          deleted_at: string | null
+          desligamento: string | null
+          email: string | null
+          endereco: string | null
+          id: string
+          limite_atestados_dias: number
+          nome: string
+          observacoes: string | null
+          rg: string | null
+          salario_bruto: number
+          setor: string
+          status: string
+          telefone: string | null
+          updated_at: string
+        }
+        Insert: {
+          admissao?: string
+          ativo?: boolean
+          cargo: string
+          cpf?: string | null
+          created_at?: string
+          deleted_at?: string | null
+          desligamento?: string | null
+          email?: string | null
+          endereco?: string | null
+          id?: string
+          limite_atestados_dias?: number
+          nome: string
+          observacoes?: string | null
+          rg?: string | null
+          salario_bruto?: number
+          setor: string
+          status?: string
+          telefone?: string | null
+          updated_at?: string
+        }
+        Update: {
+          admissao?: string
+          ativo?: boolean
+          cargo?: string
+          cpf?: string | null
+          created_at?: string
+          deleted_at?: string | null
+          desligamento?: string | null
+          email?: string | null
+          endereco?: string | null
+          id?: string
+          limite_atestados_dias?: number
+          nome?: string
+          observacoes?: string | null
+          rg?: string | null
+          salario_bruto?: number
+          setor?: string
+          status?: string
+          telefone?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       contas_pagar: {
         Row: {
           categoria: string
@@ -159,6 +225,256 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      rh_atestados: {
+        Row: {
+          ativo: boolean
+          colaborador_id: string
+          created_at: string
+          deleted_at: string | null
+          dias: number
+          fim: string
+          id: string
+          inicio: string
+          motivo: string
+          updated_at: string
+        }
+        Insert: {
+          ativo?: boolean
+          colaborador_id: string
+          created_at?: string
+          deleted_at?: string | null
+          dias?: number
+          fim: string
+          id?: string
+          inicio: string
+          motivo: string
+          updated_at?: string
+        }
+        Update: {
+          ativo?: boolean
+          colaborador_id?: string
+          created_at?: string
+          deleted_at?: string | null
+          dias?: number
+          fim?: string
+          id?: string
+          inicio?: string
+          motivo?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "rh_atestados_colaborador_id_fkey"
+            columns: ["colaborador_id"]
+            isOneToOne: false
+            referencedRelation: "colaboradores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      rh_ausencias: {
+        Row: {
+          ativo: boolean
+          cid: string | null
+          colaborador_id: string
+          comprovante: string | null
+          created_at: string
+          data: string
+          deleted_at: string | null
+          duracao: number
+          id: string
+          motivo: string | null
+          observacoes: string | null
+          tipo: string
+          unidade: string
+          updated_at: string
+        }
+        Insert: {
+          ativo?: boolean
+          cid?: string | null
+          colaborador_id: string
+          comprovante?: string | null
+          created_at?: string
+          data: string
+          deleted_at?: string | null
+          duracao?: number
+          id?: string
+          motivo?: string | null
+          observacoes?: string | null
+          tipo: string
+          unidade?: string
+          updated_at?: string
+        }
+        Update: {
+          ativo?: boolean
+          cid?: string | null
+          colaborador_id?: string
+          comprovante?: string | null
+          created_at?: string
+          data?: string
+          deleted_at?: string | null
+          duracao?: number
+          id?: string
+          motivo?: string | null
+          observacoes?: string | null
+          tipo?: string
+          unidade?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "rh_ausencias_colaborador_id_fkey"
+            columns: ["colaborador_id"]
+            isOneToOne: false
+            referencedRelation: "colaboradores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      rh_calculos: {
+        Row: {
+          beneficios: number
+          colaborador_id: string
+          created_at: string
+          custo_total: number
+          data_calculo: string
+          encargos: number
+          id: string
+          periodo: number
+          salario: number
+          unidade: string
+        }
+        Insert: {
+          beneficios?: number
+          colaborador_id: string
+          created_at?: string
+          custo_total?: number
+          data_calculo?: string
+          encargos?: number
+          id?: string
+          periodo?: number
+          salario?: number
+          unidade?: string
+        }
+        Update: {
+          beneficios?: number
+          colaborador_id?: string
+          created_at?: string
+          custo_total?: number
+          data_calculo?: string
+          encargos?: number
+          id?: string
+          periodo?: number
+          salario?: number
+          unidade?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "rh_calculos_colaborador_id_fkey"
+            columns: ["colaborador_id"]
+            isOneToOne: false
+            referencedRelation: "colaboradores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      rh_documentos: {
+        Row: {
+          arquivo_nome: string | null
+          ativo: boolean
+          colaborador_id: string
+          created_at: string
+          dados: Json
+          deleted_at: string | null
+          gerado_em: string
+          id: string
+          tipo: string
+          titulo: string
+          updated_at: string
+          usuario: string | null
+        }
+        Insert: {
+          arquivo_nome?: string | null
+          ativo?: boolean
+          colaborador_id: string
+          created_at?: string
+          dados?: Json
+          deleted_at?: string | null
+          gerado_em?: string
+          id?: string
+          tipo: string
+          titulo: string
+          updated_at?: string
+          usuario?: string | null
+        }
+        Update: {
+          arquivo_nome?: string | null
+          ativo?: boolean
+          colaborador_id?: string
+          created_at?: string
+          dados?: Json
+          deleted_at?: string | null
+          gerado_em?: string
+          id?: string
+          tipo?: string
+          titulo?: string
+          updated_at?: string
+          usuario?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "rh_documentos_colaborador_id_fkey"
+            columns: ["colaborador_id"]
+            isOneToOne: false
+            referencedRelation: "colaboradores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      rh_historico: {
+        Row: {
+          acao: string
+          colaborador_id: string | null
+          created_at: string
+          descricao: string | null
+          id: string
+          modulo: string
+          usuario: string
+          valor_anterior: string | null
+          valor_novo: string | null
+        }
+        Insert: {
+          acao: string
+          colaborador_id?: string | null
+          created_at?: string
+          descricao?: string | null
+          id?: string
+          modulo: string
+          usuario?: string
+          valor_anterior?: string | null
+          valor_novo?: string | null
+        }
+        Update: {
+          acao?: string
+          colaborador_id?: string | null
+          created_at?: string
+          descricao?: string | null
+          id?: string
+          modulo?: string
+          usuario?: string
+          valor_anterior?: string | null
+          valor_novo?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "rh_historico_colaborador_id_fkey"
+            columns: ["colaborador_id"]
+            isOneToOne: false
+            referencedRelation: "colaboradores"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
