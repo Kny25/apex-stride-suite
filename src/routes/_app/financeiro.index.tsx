@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { AlertTriangle, CreditCard, Banknote, HelpCircle, type LucideIcon } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { contaStatus, formatBRL, todayISO, addMonthsISO, type Conta } from "@/lib/financeiro";
+import { contaStatus, formatBRL, todayISO, type Conta } from "@/lib/financeiro";
 
 export const Route = createFileRoute("/_app/financeiro/")({
   component: FinanceiroPage,
@@ -35,13 +35,11 @@ function FinanceiroPage() {
   });
 
   const hoje = todayISO();
-  const fimSemana = addMonthsISO(hoje, 0); // placeholder, computed below
   const limite = (() => {
     const d = new Date();
     d.setDate(d.getDate() + 7);
     return d.toLocaleDateString("en-CA");
   })();
-  void fimSemana;
 
   const vencendo = contas.filter(
     (c) => contaStatus(c) !== "pago" && c.vencimento >= hoje && c.vencimento <= limite
